@@ -10,4 +10,12 @@
         <maven.compiler.release>24</maven.compiler.release>
         <exec.mainClass>tkd_cc_kn.ws26_busticketingsystem.WS26_BusTicketingSystem</exec.mainClass>
     </properties>
+    
+    <dependencies>
+        <dependency>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>42.7.8</version>
+        </dependency>
+    </dependencies>
 </project>
