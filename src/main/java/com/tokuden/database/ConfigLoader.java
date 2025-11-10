@@ -1,4 +1,4 @@
-package com.tokuden.sql;
+package com.tokuden.database;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -20,7 +20,7 @@ public class ConfigLoader {
         try {
             // Load XML from resources folder
             InputStream inputStream = getClass().getClassLoader()
-                .getResourceAsStream("com/tokuden/sql/config.properties.xml");
+                .getResourceAsStream("com/tokuden/xml/config.properties.xml");
             
             
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
