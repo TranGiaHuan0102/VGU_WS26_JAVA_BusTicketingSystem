@@ -1,3 +1,3 @@
 CREATE TABLE IF NOT EXISTS Locations(
-    Location_name VARCHAR(256) PRIMARY KEY
+    Location_Name VARCHAR(256) PRIMARY KEY
 );

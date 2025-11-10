@@ -1,6 +1,5 @@
-package com.tokuden.database;
+package com.tokuden.database.CRUD;
 
-import com.database.startup.load_locations;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,8 +26,9 @@ public class CRUD {
         System.out.println("TABLE FROM " + SQLFile +" CREATED!");
     }
     
-    public static void updateOperation(Connection conn, String statement, String CSVFile) throws SQLException, IOException{
-        InputStream csvStream = load_locations.class.getClassLoader().getResourceAsStream(CSVFile);
+    public static void insertOperation(Connection conn, String statement, String CSVFile) throws SQLException, IOException{
+        // Open and read CSV data file
+        InputStream csvStream = CRUD.class.getClassLoader().getResourceAsStream(CSVFile);
         
         if (csvStream == null){
             throw new IOException(CSVFile + " not found");
@@ -39,6 +39,8 @@ public class CRUD {
         reader.readLine();  // Skip header
         
         PreparedStatement stmt = conn.prepareStatement(statement);
+        
+        // Write CSV data into database
         while ((line = reader.readLine()) != null){
             String[] array = line.split(",");
             

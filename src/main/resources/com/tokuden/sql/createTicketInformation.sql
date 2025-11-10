@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS Ticket_Information(
-    Location_name VARCHAR(256),
+    Location_Name VARCHAR(256),
     Ticket_Type VARCHAR(6),
     Price BIGINT NOT NULL,
     Morning_PickupTime TIME NOT NULL,
