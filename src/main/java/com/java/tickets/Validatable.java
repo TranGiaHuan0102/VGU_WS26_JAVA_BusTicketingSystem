@@ -1,4 +1,4 @@
-package package1;
+package com.java.tickets;
 
 public interface Validatable {
     boolean isValid();

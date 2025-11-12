@@ -1,16 +1,16 @@
-package package1;
+package com.java.tickets;
 
 import package1.locations.LocationRepository;
 import package1.locations.Location;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import static package1.Ticket.date_verified;
-import static package1.Ticket.id_verified;
-import static package1.Ticket.loc_verified;
+import static com.java.tickets.Ticket.date_verified;
+import static com.java.tickets.Ticket.id_verified;
+import static com.java.tickets.Ticket.loc_verified;
 
 
-class WeeklyTicket extends Ticket implements Validatable{
+public class WeeklyTicket extends Ticket implements Validatable{
     private final LocalDate end_date;
     private final long price;
     private final LocalTime pickup_time;

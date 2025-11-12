@@ -1,3 +1,0 @@
-CREATE TABLE IF NOT EXISTS Locations(
-    Location_Name VARCHAR(256) PRIMARY KEY
-);
