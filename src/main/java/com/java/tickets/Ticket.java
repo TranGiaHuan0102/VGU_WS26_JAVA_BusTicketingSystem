@@ -1,4 +1,4 @@
-package package1;
+package com.java.tickets;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;

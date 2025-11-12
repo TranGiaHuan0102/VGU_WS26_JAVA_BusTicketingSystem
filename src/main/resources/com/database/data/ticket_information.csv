@@ -1,4 +1,4 @@
-location_id,ticket_type,price,morning_pickup_time,afternoon_pickup_time
+location_name,ticket_type,price,morning_pickuptime,afternoon_pickuptime
 Turtle Lake,WEEKLY,4500000,06:00:00,16:30:00
 Turtle Lake,DAILY,8500000,06:45:00,16:30:00
 Hang Xanh,WEEKLY,6700000,06:10:00,16:30:00
