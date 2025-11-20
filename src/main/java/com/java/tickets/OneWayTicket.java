@@ -1,62 +1,38 @@
 package com.java.tickets;
 
-import package1.locations.LocationRepository;
-import package1.locations.Location;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import static com.java.tickets.Ticket.date_verified;
-import static com.java.tickets.Ticket.id_verified;
-import static com.java.tickets.Ticket.loc_verified;
 
-class OneWayTicket extends Ticket implements Validatable{
-    private final LocalTime pickup_time;
-    private final long price = 150000;
-    
-    public static char direction_verified(char direction){
-        if (!(direction == 'T' || direction == 'F')){
-            throw new IllegalArgumentException("Invalid Direction!");
-        }
-        return direction;
-    }
+
+public class OneWayTicket extends Ticket implements Validatable{
+    private final String direction;
     
     // Constructor
-    OneWayTicket(String id, String date, String location_name, char direction){
-        super(id_verified(id), "ONE WAY", loc_verified(location_name), date_verified(date));
-        
-        if (direction_verified(direction) == 'T'){
-            Location loc = LocationRepository.getLocation(location_name);
-            this.pickup_time = loc.getDailyPickup();
-            
-        }
-        else{
-            this.pickup_time = LocalTime.of(16, 30);
-            
-        }
+    OneWayTicket(String id, String date, String location_name, String direction){
+        super(id, date_verified(date), location_name);
+        this.direction = direction;
     }
     
     // Class method
-    public static OneWayTicket create(String id, String date, String location_name, char direction){
-        OneWayTicket ot = new OneWayTicket(id, date, location_name, direction);
-        return ot;
+    public static OneWayTicket create(String id, String date, String location_name, String direction){
+        OneWayTicket owt = new OneWayTicket(id, date, location_name, direction);
+        return owt;
     }
     
-    @Override
-    void specific_ticket_info(){
-        super.generic_ticket_info();
-        System.out.println("Bus Fee: " + price + " VND");
-        System.out.println("Pickup: " + pickup_time + ", " + getDate());
-    }
+    // Getters
+    public String getDirection(){return this.direction;}
     
     @Override
     public boolean isValid(){
-        boolean valid =  getDate().equals(LocalDate.now());
+        boolean valid =  getStartDate().equals(LocalDate.now());
         super.ExpiryMessage(!valid);
         return valid;
     }
     
     @Override
     public boolean isExpired(){
-        boolean expired = !getDate().equals(LocalDate.now());
+        boolean expired = !getStartDate().equals(LocalDate.now());
         super.ExpiryMessage(expired);
         return expired;
     }

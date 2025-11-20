@@ -20,7 +20,7 @@ public class ConfigLoader {
         try {
             // Load XML from resources folder
             InputStream inputStream = getClass().getClassLoader()
-                .getResourceAsStream("com/tokuden/xml/config.properties.xml");
+                .getResourceAsStream("com/database/config/config.properties.xml");
             
             
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
