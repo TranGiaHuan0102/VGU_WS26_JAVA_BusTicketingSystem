@@ -1,15 +1,17 @@
 package com.database;
 
-import com.database.CRUD.CRUD_TicketInformation;
-import com.database.CRUD.CRUD_Locations;
-import com.database.CRUD.CRUD_Tickets;
 import java.sql.DriverManager;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.io.IOException;
 
+import com.java.tickets.Ticket;
+import com.java.tickets.WeeklyTicket;
+import com.java.tickets.DailyTicket;
+import com.java.tickets.OneWayTicket;
 
-public class DatabaseConnection {
+import com.database.CRUD.CRUD_Tickets;
+
+public class test {
     public static void main(String args[]) {
         ConfigLoader loader = new ConfigLoader();
         
@@ -21,17 +23,17 @@ public class DatabaseConnection {
         try{
             Connection conn = DriverManager.getConnection(url, username, password);
             
-            // Create ticket tables
-            CRUD_Tickets.create_week_daily(conn);
-            CRUD_Tickets.create_oneway(conn);
+            // Good
+            // WeeklyTicket wt = WeeklyTicket.create("10423043", "2025-11-20", "Becamex Tower");
+            // CRUD_Tickets.insert_ticket(conn, wt);
+            
+            OneWayTicket owt = OneWayTicket.create("10423043", "2025-11-21", "Becamex Tower", "T");
+            CRUD_Tickets.insert_ticket(conn, owt);
             
             conn.close();
         }
         catch (SQLException SQLe){
             SQLe.printStackTrace();
-        }
-        catch (IOException IOe){
-            IOe.printStackTrace();
         }
     }
 }
