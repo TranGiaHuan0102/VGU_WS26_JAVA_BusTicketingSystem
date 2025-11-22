@@ -4,12 +4,15 @@ package com.ui;
  * @author caoda
  */
 
-import com.java.tickets.*;
-import com.controller.DatabaseController;
+
 import java.time.ZoneId;
 import java.time.LocalDate;
 import java.time.Instant;
 import java.util.Date;
+
+import com.java.tickets.*;
+import com.controller.DatabaseController;
+import com.exceptions.TicketInsertionException;
 
 public class BusBooking extends javax.swing.JFrame {
     
@@ -283,11 +286,10 @@ public class BusBooking extends javax.swing.JFrame {
         if (OneWayButton.isSelected()) {
             if (DirectionComboBox.getSelectedIndex() == 0) {
                 return 3;
-            }    
-        }
-        
-        if (jDateChooser1.getDate() == null) {
-            return 4;
+            }
+            if (jDateChooser1.getDate() == null) {
+                return 4;
+            }
         }
         Date chooseDate = jDateChooser1.getDate();
         if(chooseDate != null){
@@ -327,7 +329,7 @@ public class BusBooking extends javax.swing.JFrame {
             default:
         }
         
-        // Create ticket objects
+        // Create ticket obj
         Ticket t;
         
         String location = (String) DestinationComboBox.getSelectedItem();
@@ -344,7 +346,17 @@ public class BusBooking extends javax.swing.JFrame {
             String direction = (DirectionComboBox.getSelectedIndex() == 1) ? "T" : "F";    /* Determine direction*/
             t = OneWayTicket.create(id, start_date, location, direction);
         }
-        jLabel6.setText("Submitted!");    
+        
+        
+        // Insert ticket obj to db
+        try{
+            dbc.insert(t);
+            jLabel6.setText("Submitted!");
+        }
+        catch(TicketInsertionException TIe){
+            jLabel6.setText("Error:" + TIe.getMessage());
+            TIe.printStackTrace();
+        }
     }//GEN-LAST:event_SubmitButtonActionPerformed
 
     private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed

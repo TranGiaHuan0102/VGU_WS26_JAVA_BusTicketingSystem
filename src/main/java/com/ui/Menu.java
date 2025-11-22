@@ -132,7 +132,7 @@ public class Menu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void MyTicketButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MyTicketButtonActionPerformed
-        // TODO add your handling code here:
+        dbc.search(id);
     }//GEN-LAST:event_MyTicketButtonActionPerformed
 
     private void BuyTicketButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BuyTicketButtonActionPerformed

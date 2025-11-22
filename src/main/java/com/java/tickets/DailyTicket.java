@@ -5,7 +5,7 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
 
-public class DailyTicket extends Ticket implements Validatable{
+public class DailyTicket extends Ticket{
     private final LocalDate end_date;
     
     // Constructor
@@ -22,26 +22,4 @@ public class DailyTicket extends Ticket implements Validatable{
     
     // Getters
     public LocalDate getEndDate(){return this.end_date;}
-    
-    // Interface implementations
-    @Override
-    public boolean isValid(){
-        boolean valid = getStartDate().isBefore(this.end_date);
-        super.ExpiryMessage(!valid);
-        return valid;
-    }
-    
-    @Override
-    public boolean isExpired(){
-        boolean expired = getStartDate().isAfter(this.end_date);
-        super.ExpiryMessage(expired);
-        return expired;
-    }
-    
-    @Override
-    public int remaining(){
-        int remaining_days =  (int) ChronoUnit.DAYS.between(getStartDate(), this.end_date);
-        super.RemainingDaysMessage(remaining_days);
-        return remaining_days;
-    }
 }
