@@ -41,15 +41,15 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-              <EmptySpace pref="287" max="32767" attributes="0"/>
+              <EmptySpace pref="282" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
-                      <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+                      <Component id="StudentLoginButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="287" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
-                      <Component id="jLabel1" min="-2" pref="175" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="273" max="-2" attributes="0"/>
+                      <Component id="MainMenuLabel" min="-2" pref="175" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="278" max="-2" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -58,17 +58,17 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="-2" pref="80" max="-2" attributes="0"/>
-              <Component id="jLabel1" min="-2" pref="56" max="-2" attributes="0"/>
-              <EmptySpace pref="116" max="32767" attributes="0"/>
-              <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="82" max="-2" attributes="0"/>
+              <Component id="MainMenuLabel" min="-2" pref="56" max="-2" attributes="0"/>
+              <EmptySpace pref="114" max="32767" attributes="0"/>
+              <Component id="StudentLoginButton" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="96" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JLabel" name="jLabel1">
+    <Component class="javax.swing.JLabel" name="MainMenuLabel">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Segoe UI" size="24" style="1"/>
@@ -78,7 +78,7 @@
         <Property name="toolTipText" type="java.lang.String" value=""/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton1">
+    <Component class="javax.swing.JButton" name="StudentLoginButton">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Segoe UI" size="18" style="1"/>
@@ -86,7 +86,7 @@
         <Property name="text" type="java.lang.String" value="Student Login"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="StudentLoginButtonActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>
