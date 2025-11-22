@@ -48,6 +48,7 @@ public class UserLogin extends javax.swing.JFrame {
         LogInButton = new javax.swing.JButton();
         SignUpButton = new javax.swing.JButton();
         jPasswordField1 = new javax.swing.JPasswordField();
+        ErrorMessage = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -77,6 +78,10 @@ public class UserLogin extends javax.swing.JFrame {
 
         jPasswordField1.setToolTipText("");
 
+        ErrorMessage.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        ErrorMessage.setForeground(new java.awt.Color(255, 51, 51));
+        ErrorMessage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -92,12 +97,14 @@ public class UserLogin extends javax.swing.JFrame {
                     .addComponent(jLabel2))
                 .addGap(62, 62, 62)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(LogInButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(SignUpButton))
-                    .addComponent(IDField, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
-                    .addComponent(jPasswordField1))
+                    .addComponent(ErrorMessage, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(LogInButton)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(SignUpButton))
+                        .addComponent(IDField, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
+                        .addComponent(jPasswordField1)))
                 .addContainerGap(193, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -117,7 +124,9 @@ public class UserLogin extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(LogInButton)
                     .addComponent(SignUpButton))
-                .addContainerGap(47, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(ErrorMessage)
+                .addContainerGap(29, Short.MAX_VALUE))
         );
 
         jLabel1.getAccessibleContext().setAccessibleName("User Login");
@@ -132,16 +141,21 @@ public class UserLogin extends javax.swing.JFrame {
     // Login Button
     private void LogInButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogInButtonActionPerformed
         String id = IDField.getText().trim();
-        
-        if (id == null || id.isEmpty()){
-            // Add handling logic here
-            
+        String password = new String(jPasswordField1.getPassword()).trim();
+        if(id.isEmpty()){
+            ErrorMessage.setText("Please Input Your ID or Password");
+            return;                
         }
-        
+        if(!id.matches("\\d{8}")){
+            ErrorMessage.setText("ID must be 8 DIGITS");
+        }
+        else{
+        ErrorMessage.setText("");
         dispose();
         Menu m = new Menu(dbc, id);
         m.setVisible(true);
         m.setLocationRelativeTo(null);
+        }
     }//GEN-LAST:event_LogInButtonActionPerformed
 
     // Sign-up Button
@@ -155,6 +169,7 @@ public class UserLogin extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel ErrorMessage;
     private javax.swing.JTextField IDField;
     private javax.swing.JButton LogInButton;
     private javax.swing.JButton SignUpButton;

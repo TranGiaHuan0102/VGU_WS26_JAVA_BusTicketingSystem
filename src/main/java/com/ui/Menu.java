@@ -21,7 +21,7 @@ public class Menu extends javax.swing.JFrame {
         initComponents();
         this.dbc = dbc;
         this.id = id;
-
+        jLabel2.setText("Welcome!" + " " + id);
         // CLOSE BUTTON
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
@@ -47,9 +47,9 @@ public class Menu extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        MyTicketButton = new javax.swing.JButton();
+        BuyTicketButton = new javax.swing.JButton();
+        SignOutButton = new javax.swing.JButton();
 
         jMenu1.setText("jMenu1");
 
@@ -87,17 +87,17 @@ public class Menu extends javax.swing.JFrame {
                 .addContainerGap(30, Short.MAX_VALUE))
         );
 
-        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jButton1.setText("My Ticket");
-        jButton1.addActionListener(this::jButton1ActionPerformed);
+        MyTicketButton.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        MyTicketButton.setText("My Ticket");
+        MyTicketButton.addActionListener(this::MyTicketButtonActionPerformed);
 
-        jButton2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jButton2.setText("Buy Ticket");
-        jButton2.addActionListener(this::jButton2ActionPerformed);
+        BuyTicketButton.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        BuyTicketButton.setText("Buy Ticket");
+        BuyTicketButton.addActionListener(this::BuyTicketButtonActionPerformed);
 
-        jButton3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButton3.setText("Sign out");
-        jButton3.addActionListener(this::jButton3ActionPerformed);
+        SignOutButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        SignOutButton.setText("Sign out");
+        SignOutButton.addActionListener(this::SignOutButtonActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -107,12 +107,12 @@ public class Menu extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(299, 299, 299)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(BuyTicketButton, javax.swing.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE)
+                    .addComponent(MyTicketButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton3)
+                .addComponent(SignOutButton)
                 .addGap(30, 30, 30))
         );
         layout.setVerticalGroup(
@@ -120,43 +120,43 @@ public class Menu extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(BuyTicketButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(56, 56, 56)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(MyTicketButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(70, 70, 70)
-                .addComponent(jButton3)
+                .addComponent(SignOutButton)
                 .addGap(17, 17, 17))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void MyTicketButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MyTicketButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_MyTicketButtonActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void BuyTicketButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BuyTicketButtonActionPerformed
         // TODO add your handling code here:
         this.dispose();
         BusBooking BB = new BusBooking(dbc, id);
         BB.setVisible(true);
         BB.setLocationRelativeTo(null);
         
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_BuyTicketButtonActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void SignOutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignOutButtonActionPerformed
         // TODO add your handling code here:
         this.dispose();
         UserLogin ul = new UserLogin(dbc);
         ul.setVisible(true);
         ul.setLocationRelativeTo(null);
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_SignOutButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton BuyTicketButton;
+    private javax.swing.JButton MyTicketButton;
+    private javax.swing.JButton SignOutButton;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
