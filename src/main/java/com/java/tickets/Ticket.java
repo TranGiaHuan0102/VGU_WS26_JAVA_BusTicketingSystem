@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
 
-public abstract class Ticket implements Validatable {
+public abstract class Ticket{
     private String id;
     private final LocalDate start_date;
     private final String location;
@@ -17,20 +17,10 @@ public abstract class Ticket implements Validatable {
         this.location = location;
     }
     
-    public static LocalDate date_verified(String date_string){
-        try{
-            return LocalDate.parse(date_string);
-        }
-        catch(DateTimeParseException e){
-            throw new IllegalArgumentException("Invalid date format!");
-        }   
-    }
-    
     // Getters:
     public String getID(){return this.id;}
     public LocalDate getStartDate(){return this.start_date;}
     public String getLocation(){return this.location;}
-    
     
     
     public void ExpiryMessage(boolean expired){
@@ -50,15 +40,4 @@ public abstract class Ticket implements Validatable {
             ExpiryMessage(true);
         }
     }
-    
-    
-    // Interface methods - force subclasses to implement
-    @Override
-    public abstract boolean isValid();
-    
-    @Override
-    public abstract boolean isExpired();
-    
-    @Override
-    public abstract int remaining();
 }

@@ -15,5 +15,6 @@ public class WS26_BusTicketingSystem {
         MainMenu mr = new MainMenu();
         mr.setVisible(true);
         mr.setLocationRelativeTo(null);
+        
     }
 }

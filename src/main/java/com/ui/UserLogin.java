@@ -3,15 +3,33 @@ package com.ui;
  *
  * @author caoda
  */
+import com.controller.DatabaseController;
 public class UserLogin extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(UserLogin.class.getName());
-
-    /**
-     * Creates new form UserLogin
-     */
-    public UserLogin() {
+    private DatabaseController dbc;
+    
+    // Creates new form: User Login
+    public UserLogin(DatabaseController dbc) {
         initComponents();
+        
+        // ADD DB CONTROLLER
+        if (this.dbc == null){
+            this.dbc = dbc;
+        }
+        
+        // CLOSE BUTTON
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent){
+                // Close database controller (if open)
+                if (dbc != null){
+                    dbc.close();
+                }
+                dispose();
+                System.exit(0);
+            }
+        });
     }
 
     /**
@@ -26,9 +44,9 @@ public class UserLogin extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        IDField = new javax.swing.JTextField();
+        LogInButton = new javax.swing.JButton();
+        SignUpButton = new javax.swing.JButton();
         jPasswordField1 = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -47,15 +65,15 @@ public class UserLogin extends javax.swing.JFrame {
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel3.setText("Password:");
 
-        jTextField1.addActionListener(this::jTextField1ActionPerformed);
+        IDField.addActionListener(this::IDFieldActionPerformed);
 
-        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButton1.setText("Login");
-        jButton1.addActionListener(this::jButton1ActionPerformed);
+        LogInButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        LogInButton.setText("Login");
+        LogInButton.addActionListener(this::LogInButtonActionPerformed);
 
-        jButton2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButton2.setText("Sign up");
-        jButton2.addActionListener(this::jButton2ActionPerformed);
+        SignUpButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        SignUpButton.setText("Sign up");
+        SignUpButton.addActionListener(this::SignUpButtonActionPerformed);
 
         jPasswordField1.setToolTipText("");
 
@@ -75,10 +93,10 @@ public class UserLogin extends javax.swing.JFrame {
                 .addGap(62, 62, 62)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1)
+                        .addComponent(LogInButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton2))
-                    .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
+                        .addComponent(SignUpButton))
+                    .addComponent(IDField, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
                     .addComponent(jPasswordField1))
                 .addContainerGap(193, Short.MAX_VALUE))
         );
@@ -90,15 +108,15 @@ public class UserLogin extends javax.swing.JFrame {
                 .addGap(37, 37, 37)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(IDField, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(LogInButton)
+                    .addComponent(SignUpButton))
                 .addContainerGap(47, Short.MAX_VALUE))
         );
 
@@ -107,34 +125,42 @@ public class UserLogin extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void IDFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_IDFieldActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_IDFieldActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+    // Login Button
+    private void LogInButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogInButtonActionPerformed
+        String id = IDField.getText().trim();
+        
+        if (id == null || id.isEmpty()){
+            // Add handling logic here
+            
+        }
+        
         dispose();
-        Menu m = new Menu();
+        Menu m = new Menu(dbc, id);
         m.setVisible(true);
         m.setLocationRelativeTo(null);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_LogInButtonActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    // Sign-up Button
+    private void SignUpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignUpButtonActionPerformed
         // TODO add your handling code here:
         dispose();
-        NewUser nu = new NewUser();
+        NewUser nu = new NewUser(dbc);
         nu.setVisible(true);
         nu.setLocationRelativeTo(null); 
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_SignUpButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JTextField IDField;
+    private javax.swing.JButton LogInButton;
+    private javax.swing.JButton SignUpButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }
