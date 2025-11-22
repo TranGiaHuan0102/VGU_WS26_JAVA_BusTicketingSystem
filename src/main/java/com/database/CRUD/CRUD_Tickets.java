@@ -107,4 +107,34 @@ public class CRUD_Tickets {
         sqle.printStackTrace();
         }
     }
+    
+    // Search all tickets
+    public static void search_ticket(Connection conn, String id){
+    String weekly_daily_Stmt = "SELECT W.id, W.start_date, W.end_date, TI.ticket_type, TI.location_name, TI.morning_pickuptime, TI.afternoon_pickuptime"
+                             + "FROM weekly_daily W "
+                             + "JOIN ticket_information TI ON (W.ticket_type = TI.ticket_type AND W.location_name = TI.location_name"
+                             + "WHERE id = ?";
+    
+    String oneway_Stmt = "SELECT OW.id, OW.purchase_date, OW.direction, TI.location_name, TI.morning_pickuptime, TI.afternoon_pickuptime "
+                       + "FROM oneway OW JOIN ticket_information TI "
+                       + "ON (OW.ticket_type = TI.ticket_type AND OW.location_name = TI.location_name)"
+                       + "WHERE id = ?";
+    
+    
+    try (PreparedStatement stmt = conn.prepareStatement(weekly_daily_Stmt)){
+       stmt.setString(1, id);
+       
+       ResultSet rSet = stmt.executeQuery();
+       while (rSet.next()){
+           // If current ticket is WEEKLY
+           if (rSet.getString("ticket_type").equals("WEEKLY")){
+               
+           }
+       }
+    }
+    catch (SQLException sqle){
+        System.out.println("Search failed: " + sqle.getMessage());
+        sqle.printStackTrace();
+        }
+    }
 }

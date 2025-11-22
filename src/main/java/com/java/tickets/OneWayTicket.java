@@ -2,20 +2,19 @@ package com.java.tickets;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import static com.java.tickets.Ticket.date_verified;
 
 
 public class OneWayTicket extends Ticket implements Validatable{
     private final String direction;
     
     // Constructor
-    OneWayTicket(String id, String date, String location_name, String direction){
-        super(id, date_verified(date), location_name);
+    OneWayTicket(String id, LocalDate date, String location_name, String direction){
+        super(id, date, location_name);
         this.direction = direction;
     }
     
     // Class method
-    public static OneWayTicket create(String id, String date, String location_name, String direction){
+    public static OneWayTicket create(String id, LocalDate date, String location_name, String direction){
         OneWayTicket owt = new OneWayTicket(id, date, location_name, direction);
         return owt;
     }

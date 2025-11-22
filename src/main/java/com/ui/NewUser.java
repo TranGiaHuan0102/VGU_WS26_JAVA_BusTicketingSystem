@@ -8,15 +8,30 @@ package com.ui;
  *
  * @author caoda
  */
+import com.controller.DatabaseController;
 public class NewUser extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(NewUser.class.getName());
-
+    private DatabaseController dbc;
     /**
      * Creates new form NewUser
      */
-    public NewUser() {
+    public NewUser(DatabaseController dbc) {
         initComponents();
+        this.dbc = dbc;
+        
+        // CLOSE BUTTON
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent){
+                // Close database controller (if open)
+                if (dbc != null){
+                    dbc.close();
+                }
+                dispose();
+                System.exit(0);
+            }
+        });
     }
 
     /**
@@ -168,7 +183,7 @@ public class NewUser extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         dispose();
-        UserLogin ul = new UserLogin();
+        UserLogin ul = new UserLogin(dbc);
         ul.setVisible(true);
         ul.setLocationRelativeTo(null);
     }//GEN-LAST:event_jButton2ActionPerformed

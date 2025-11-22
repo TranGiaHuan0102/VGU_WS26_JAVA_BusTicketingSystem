@@ -1,22 +1,41 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package com.ui;
 /**
  *
  * @author caoda
  */
+
+import com.java.tickets.*;
+import com.controller.DatabaseController;
+import java.time.ZoneId;
+import java.time.LocalDate;
+
 public class BusBooking extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(BusBooking.class.getName());
-
+    private final DatabaseController dbc;
+    private final String id;
     /**
      * Creates new form BusBooking
      */
-    public BusBooking() {
+    public BusBooking(DatabaseController dbc, String id) {
         initComponents();
         setTicketType();
+
+        this.dbc = dbc;
+        this.id = id;
+        
+        // CLOSE BUTTON
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent){
+                // Close database controller (if open)
+                if (dbc != null){
+                    dbc.close();
+                }
+                dispose();
+                System.exit(0);
+            }
+        });
     }
     private void setDirandDp(boolean enabled){
         jComboBox2.setEnabled(enabled);
@@ -64,12 +83,11 @@ public class BusBooking extends javax.swing.JFrame {
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
         jLabel5 = new javax.swing.JLabel();
         jComboBox2 = new javax.swing.JComboBox<>();
-        jButton1 = new javax.swing.JButton();
+        SubmitButton = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(891, 493));
 
         jPanel1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(255, 153, 51), 5, true));
         jPanel1.setForeground(new java.awt.Color(255, 153, 51));
@@ -141,9 +159,9 @@ public class BusBooking extends javax.swing.JFrame {
         jComboBox2.setToolTipText("");
         jComboBox2.addActionListener(this::jComboBox2ActionPerformed);
 
-        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButton1.setText("Submit");
-        jButton1.addActionListener(this::jButton1ActionPerformed);
+        SubmitButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        SubmitButton.setText("Submit");
+        SubmitButton.addActionListener(this::SubmitButtonActionPerformed);
 
         jButton2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton2.setText("Back");
@@ -180,7 +198,7 @@ public class BusBooking extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jButton1)
+                                        .addComponent(SubmitButton)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jButton2))
                                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
@@ -219,7 +237,7 @@ public class BusBooking extends javax.swing.JFrame {
                     .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
+                    .addComponent(SubmitButton)
                     .addComponent(jButton2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel6)
@@ -256,33 +274,73 @@ public class BusBooking extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBox2ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+    private int SubmitConditions(){
+        // Conditions before submission
         if(jComboBox1.getSelectedIndex() == 0){
-            jLabel6.setText("Please select a destination!");
-            return;
+            return 1;
         }
+        
         if(!jRadioButton1.isSelected() && !jRadioButton2.isSelected() && !jRadioButton3.isSelected()){
-            jLabel6.setText("Please select a ticket type!");
-            return;
+            return 2;
         }
+        
         if (jRadioButton3.isSelected()) {
             if (jComboBox2.getSelectedIndex() == 0) {
+                return 3;
+            }    
+        }
+        
+        if (jDateChooser1.getDate() == null) {
+            return 4;
+        }
+        return 0;
+    }
+    
+    
+    private void SubmitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SubmitButtonActionPerformed
+        // Check validity of submission
+        int submission_status = SubmitConditions();
+        
+        switch (submission_status){
+            case 1:
+                jLabel6.setText("Please select a destination!");
+                return;
+            case 2:
+                jLabel6.setText("Please select a ticket type!");
+                return;
+            case 3:
                 jLabel6.setText("Please select a direction!");
                 return;
+            case 4:
+                jLabel6.setText("Please select a departure date!");
+                return;
+            default:
         }
-        if (jDateChooser1.getDate() == null) {
-            jLabel6.setText("Please select a departure date!");
-            return;
+        
+        // Create ticket objects
+        Ticket t;
+        
+        String location = (String) jComboBox1.getSelectedItem();
+        LocalDate start_date = jDateChooser1.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        
+        if (jRadioButton1.isSelected()){        /*daily*/
+            t = DailyTicket.create(id, start_date, location);
+            
         }
-    }
-        jLabel6.setText("Submitted!");
-    }//GEN-LAST:event_jButton1ActionPerformed
+        else if (jRadioButton2.isSelected()){    /*weekly*/
+            t = WeeklyTicket.create(id, start_date, location);
+        }
+        else{
+            String direction = (jComboBox2.getSelectedIndex() == 1) ? "T" : "F";    /* Determine direction*/
+            t = OneWayTicket.create(id, start_date, location, direction);
+        }
+        jLabel6.setText("Submitted!");    
+    }//GEN-LAST:event_SubmitButtonActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         this.dispose();
-        Menu m = new Menu();
+        Menu m = new Menu(dbc, id);
         m.setVisible(true);
         m.setLocationRelativeTo(null);
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -293,6 +351,7 @@ public class BusBooking extends javax.swing.JFrame {
 
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton SubmitButton;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup10;
     private javax.swing.ButtonGroup buttonGroup11;
@@ -306,7 +365,6 @@ public class BusBooking extends javax.swing.JFrame {
     private javax.swing.ButtonGroup buttonGroup7;
     private javax.swing.ButtonGroup buttonGroup8;
     private javax.swing.ButtonGroup buttonGroup9;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;

@@ -3,20 +3,19 @@ package com.java.tickets;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import static com.java.tickets.Ticket.date_verified;
 
 
 public class DailyTicket extends Ticket implements Validatable{
     private final LocalDate end_date;
     
     // Constructor
-    DailyTicket(String id, String start_date, String location_name){ 
-        super(id, date_verified(start_date), location_name);
+    DailyTicket(String id, LocalDate start_date, String location_name){ 
+        super(id, start_date, location_name);
         this.end_date = getStartDate().plusDays(180);
         
     }
     
-    public static DailyTicket create(String id, String start_date, String location_name){
+    public static DailyTicket create(String id, LocalDate start_date, String location_name){
         DailyTicket dt = new DailyTicket(id, start_date, location_name);
         return dt;
     }
