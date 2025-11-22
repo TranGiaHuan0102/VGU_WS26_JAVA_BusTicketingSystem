@@ -8,6 +8,8 @@ import com.java.tickets.*;
 import com.controller.DatabaseController;
 import java.time.ZoneId;
 import java.time.LocalDate;
+import java.time.Instant;
+import java.util.Date;
 
 public class BusBooking extends javax.swing.JFrame {
     
@@ -17,6 +19,7 @@ public class BusBooking extends javax.swing.JFrame {
     /**
      * Creates new form BusBooking
      */
+    
     public BusBooking(DatabaseController dbc, String id) {
         initComponents();
         setTicketType();
@@ -37,15 +40,20 @@ public class BusBooking extends javax.swing.JFrame {
             }
         });
     }
+
     private void setDirandDp(boolean enabled){
-        jComboBox2.setEnabled(enabled);
+        DirectionComboBox.setEnabled(enabled);
         jDateChooser1.setEnabled(enabled);
+    }
+    private void setDpnotDir(boolean enabled){
+        DirectionComboBox.setEnabled(false);
+        jDateChooser1.setEnabled(enabled);  
     }
     
     private void setTicketType(){
-        jRadioButton1.addActionListener(e -> setDirandDp(false));
-        jRadioButton2.addActionListener(e -> setDirandDp(false));
-        jRadioButton3.addActionListener(e -> setDirandDp(true)); 
+        DailyButton.addActionListener(e -> setDirandDp(false));
+        WeeklyButton.addActionListener(e -> setDpnotDir(true));
+        OneWayButton.addActionListener(e -> setDirandDp(true)); 
     }
     
     
@@ -59,32 +67,20 @@ public class BusBooking extends javax.swing.JFrame {
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
-        buttonGroup2 = new javax.swing.ButtonGroup();
-        buttonGroup3 = new javax.swing.ButtonGroup();
-        buttonGroup4 = new javax.swing.ButtonGroup();
-        buttonGroup5 = new javax.swing.ButtonGroup();
-        buttonGroup6 = new javax.swing.ButtonGroup();
-        buttonGroup7 = new javax.swing.ButtonGroup();
-        buttonGroup8 = new javax.swing.ButtonGroup();
-        buttonGroup9 = new javax.swing.ButtonGroup();
-        buttonGroup10 = new javax.swing.ButtonGroup();
-        buttonGroup11 = new javax.swing.ButtonGroup();
-        buttonGroup12 = new javax.swing.ButtonGroup();
-        buttonGroup13 = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        DestinationComboBox = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
-        jRadioButton3 = new javax.swing.JRadioButton();
+        DailyButton = new javax.swing.JRadioButton();
+        WeeklyButton = new javax.swing.JRadioButton();
+        OneWayButton = new javax.swing.JRadioButton();
         jLabel4 = new javax.swing.JLabel();
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
         jLabel5 = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox<>();
+        DirectionComboBox = new javax.swing.JComboBox<>();
         SubmitButton = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        BackButton = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -117,27 +113,27 @@ public class BusBooking extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel2.setText("Destination:");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Destination", "Turtle Lake", "Hang Xanh", "Binh Trieu", "Binh Phuoc Crossroads", "Binh Duong Aeon Mall", "Becamex Tower" }));
-        jComboBox1.setToolTipText("");
-        jComboBox1.addActionListener(this::jComboBox1ActionPerformed);
+        DestinationComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Destination", "Turtle Lake", "Hang Xanh", "Binh Trieu", "Binh Phuoc Crossroads", "Binh Duong Aeon Mall", "Becamex Tower" }));
+        DestinationComboBox.setToolTipText("");
+        DestinationComboBox.addActionListener(this::DestinationComboBoxActionPerformed);
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel3.setText("Ticket Type:");
 
-        buttonGroup1.add(jRadioButton1);
-        jRadioButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jRadioButton1.setText("Daily ");
-        jRadioButton1.addActionListener(this::jRadioButton1ActionPerformed);
+        buttonGroup1.add(DailyButton);
+        DailyButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        DailyButton.setText("Daily ");
+        DailyButton.addActionListener(this::DailyButtonActionPerformed);
 
-        buttonGroup1.add(jRadioButton2);
-        jRadioButton2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jRadioButton2.setText("Weekly");
-        jRadioButton2.addActionListener(this::jRadioButton2ActionPerformed);
+        buttonGroup1.add(WeeklyButton);
+        WeeklyButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        WeeklyButton.setText("Weekly");
+        WeeklyButton.addActionListener(this::WeeklyButtonActionPerformed);
 
-        buttonGroup1.add(jRadioButton3);
-        jRadioButton3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jRadioButton3.setText("One-way");
-        jRadioButton3.addActionListener(this::jRadioButton3ActionPerformed);
+        buttonGroup1.add(OneWayButton);
+        OneWayButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        OneWayButton.setText("One-way");
+        OneWayButton.addActionListener(this::OneWayButtonActionPerformed);
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel4.setText("Departure:");
@@ -155,17 +151,17 @@ public class BusBooking extends javax.swing.JFrame {
         jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel5.setText("Direction:");
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Direction", "to VGU", "From VGU" }));
-        jComboBox2.setToolTipText("");
-        jComboBox2.addActionListener(this::jComboBox2ActionPerformed);
+        DirectionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Direction", "to VGU", "From VGU" }));
+        DirectionComboBox.setToolTipText("");
+        DirectionComboBox.addActionListener(this::DirectionComboBoxActionPerformed);
 
         SubmitButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         SubmitButton.setText("Submit");
         SubmitButton.addActionListener(this::SubmitButtonActionPerformed);
 
-        jButton2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButton2.setText("Back");
-        jButton2.addActionListener(this::jButton2ActionPerformed);
+        BackButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        BackButton.setText("Back");
+        BackButton.addActionListener(this::BackButtonActionPerformed);
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(51, 204, 0));
@@ -192,21 +188,21 @@ public class BusBooking extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(32, 32, 32)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(DestinationComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(DirectionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(SubmitButton)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jButton2))
+                                        .addComponent(BackButton))
                                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addComponent(jRadioButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(DailyButton, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jRadioButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addComponent(WeeklyButton, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jRadioButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(OneWayButton, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(10, 10, 10)
                         .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -220,13 +216,13 @@ public class BusBooking extends javax.swing.JFrame {
                 .addGap(79, 79, 79)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(DestinationComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jRadioButton1)
-                    .addComponent(jRadioButton2)
-                    .addComponent(jRadioButton3))
+                    .addComponent(DailyButton)
+                    .addComponent(WeeklyButton)
+                    .addComponent(OneWayButton))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -234,58 +230,58 @@ public class BusBooking extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(DirectionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(SubmitButton)
-                    .addComponent(jButton2))
+                    .addComponent(BackButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel6)
                 .addGap(12, 12, 12))
         );
 
-        jRadioButton1.getAccessibleContext().setAccessibleName("");
-        jRadioButton1.getAccessibleContext().setAccessibleDescription("");
-        jRadioButton2.getAccessibleContext().setAccessibleName("");
-        jRadioButton2.getAccessibleContext().setAccessibleDescription("");
-        jRadioButton3.getAccessibleContext().setAccessibleName("");
-        jRadioButton3.getAccessibleContext().setAccessibleDescription("");
+        DailyButton.getAccessibleContext().setAccessibleName("");
+        DailyButton.getAccessibleContext().setAccessibleDescription("");
+        WeeklyButton.getAccessibleContext().setAccessibleName("");
+        WeeklyButton.getAccessibleContext().setAccessibleDescription("");
+        OneWayButton.getAccessibleContext().setAccessibleName("");
+        OneWayButton.getAccessibleContext().setAccessibleDescription("");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+    private void DestinationComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DestinationComboBoxActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox1ActionPerformed
+    }//GEN-LAST:event_DestinationComboBoxActionPerformed
 
-    private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
+    private void DailyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DailyButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jRadioButton1ActionPerformed
+    }//GEN-LAST:event_DailyButtonActionPerformed
 
-    private void jRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton2ActionPerformed
+    private void WeeklyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_WeeklyButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jRadioButton2ActionPerformed
+    }//GEN-LAST:event_WeeklyButtonActionPerformed
 
-    private void jRadioButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton3ActionPerformed
+    private void OneWayButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OneWayButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jRadioButton3ActionPerformed
+    }//GEN-LAST:event_OneWayButtonActionPerformed
 
-    private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
+    private void DirectionComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DirectionComboBoxActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox2ActionPerformed
+    }//GEN-LAST:event_DirectionComboBoxActionPerformed
 
     private int SubmitConditions(){
         // Conditions before submission
-        if(jComboBox1.getSelectedIndex() == 0){
+        if(DestinationComboBox.getSelectedIndex() == 0){
             return 1;
         }
         
-        if(!jRadioButton1.isSelected() && !jRadioButton2.isSelected() && !jRadioButton3.isSelected()){
+        if(!DailyButton.isSelected() && !WeeklyButton.isSelected() && !OneWayButton.isSelected()){
             return 2;
         }
         
-        if (jRadioButton3.isSelected()) {
-            if (jComboBox2.getSelectedIndex() == 0) {
+        if (OneWayButton.isSelected()) {
+            if (DirectionComboBox.getSelectedIndex() == 0) {
                 return 3;
             }    
         }
@@ -293,6 +289,17 @@ public class BusBooking extends javax.swing.JFrame {
         if (jDateChooser1.getDate() == null) {
             return 4;
         }
+        Date chooseDate = jDateChooser1.getDate();
+        if(chooseDate != null){
+            LocalDate selectedDate = chooseDate.toInstant()
+                                               .atZone(ZoneId.systemDefault())
+                                               .toLocalDate();
+            LocalDate currentDate = LocalDate.now();
+            if(selectedDate.isBefore(currentDate)){
+                return 5;
+            }
+        }
+        
         return 0;
     }
     
@@ -314,36 +321,39 @@ public class BusBooking extends javax.swing.JFrame {
             case 4:
                 jLabel6.setText("Please select a departure date!");
                 return;
+            case 5:
+                jLabel6.setText("Please select valid date!");
+                return;
             default:
         }
         
         // Create ticket objects
         Ticket t;
         
-        String location = (String) jComboBox1.getSelectedItem();
+        String location = (String) DestinationComboBox.getSelectedItem();
         LocalDate start_date = jDateChooser1.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         
-        if (jRadioButton1.isSelected()){        /*daily*/
+        if (DailyButton.isSelected()){        /*daily*/
             t = DailyTicket.create(id, start_date, location);
             
         }
-        else if (jRadioButton2.isSelected()){    /*weekly*/
+        else if (WeeklyButton.isSelected()){    /*weekly*/
             t = WeeklyTicket.create(id, start_date, location);
         }
         else{
-            String direction = (jComboBox2.getSelectedIndex() == 1) ? "T" : "F";    /* Determine direction*/
+            String direction = (DirectionComboBox.getSelectedIndex() == 1) ? "T" : "F";    /* Determine direction*/
             t = OneWayTicket.create(id, start_date, location, direction);
         }
         jLabel6.setText("Submitted!");    
     }//GEN-LAST:event_SubmitButtonActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed
         // TODO add your handling code here:
         this.dispose();
         Menu m = new Menu(dbc, id);
         m.setVisible(true);
         m.setLocationRelativeTo(null);
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_BackButtonActionPerformed
 
     private void jDateChooser1AncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_jDateChooser1AncestorAdded
         // TODO add your handling code here:
@@ -351,23 +361,14 @@ public class BusBooking extends javax.swing.JFrame {
 
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton BackButton;
+    private javax.swing.JRadioButton DailyButton;
+    private javax.swing.JComboBox<String> DestinationComboBox;
+    private javax.swing.JComboBox<String> DirectionComboBox;
+    private javax.swing.JRadioButton OneWayButton;
     private javax.swing.JButton SubmitButton;
+    private javax.swing.JRadioButton WeeklyButton;
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.ButtonGroup buttonGroup10;
-    private javax.swing.ButtonGroup buttonGroup11;
-    private javax.swing.ButtonGroup buttonGroup12;
-    private javax.swing.ButtonGroup buttonGroup13;
-    private javax.swing.ButtonGroup buttonGroup2;
-    private javax.swing.ButtonGroup buttonGroup3;
-    private javax.swing.ButtonGroup buttonGroup4;
-    private javax.swing.ButtonGroup buttonGroup5;
-    private javax.swing.ButtonGroup buttonGroup6;
-    private javax.swing.ButtonGroup buttonGroup7;
-    private javax.swing.ButtonGroup buttonGroup8;
-    private javax.swing.ButtonGroup buttonGroup9;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
     private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -376,8 +377,5 @@ public class BusBooking extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
-    private javax.swing.JRadioButton jRadioButton3;
     // End of variables declaration//GEN-END:variables
 }
