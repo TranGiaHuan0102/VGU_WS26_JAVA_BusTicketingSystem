@@ -4,6 +4,8 @@ package com.ui;
  * @author caoda
  */
 import com.controller.DatabaseController;
+import com.exceptions.DatabaseConnectionException;
+
 public class MainMenu extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MainMenu.class.getName());
@@ -11,12 +13,18 @@ public class MainMenu extends javax.swing.JFrame {
     /**
      * Creates new form MainMenu
      */
-    public MainMenu() {
+    public MainMenu()  {
         initComponents();
         
         // ADD DB CONTROLLER
-        if (dbc == null){
-            this.dbc = new DatabaseController();
+        try{
+           if (dbc == null){
+               this.dbc = new DatabaseController();
+           } 
+        }
+        catch (DatabaseConnectionException DBe){
+            DBe.printStackTrace();
+            System.exit(0);
         }
         
         // CLOSE BUTTON

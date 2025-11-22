@@ -1,52 +1,42 @@
 package com.database.CRUD;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.PreparedStatement;
 import java.sql.Date;
 
-import com.java.tickets.WeeklyTicket;
-import com.java.tickets.DailyTicket;
-import com.java.tickets.OneWayTicket;
+import java.util.List;
+import java.util.ArrayList;
+
+import com.java.tickets.*;
+import com.java.ticketdetails.*;
+import com.exceptions.TicketInsertionException;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 
 public class CRUD_Tickets {    
     
 
     // Overloading Insert
-    
-    private static boolean eligible(Connection conn, String id){
-    // Can only re-register if current daily/weekly ticket expires
-    boolean eligible = true;
-        
-    String selectStmt = "SELECT end_date FROM weekly_daily WHERE id = ? ORDER BY end_date DESC LIMIT 1";
-    try (PreparedStatement stmt = conn.prepareStatement(selectStmt)){
-        stmt.setString(1, id);
-        
-        ResultSet rSet = stmt.executeQuery();
-        if (rSet.next()){
-            LocalDate endDate = rSet.getDate("end_date").toLocalDate();
-            if (endDate.isAfter(LocalDate.now())){
-                eligible = false;
-            }
+    public static void insert_ticket(Connection conn, Ticket t) throws TicketInsertionException{
+        if (t instanceof WeeklyTicket){
+            insert_ticket(conn, (WeeklyTicket) t);
         }
-        
-    }
-    catch(SQLException sqle){
-        System.out.println("Check failed: " + sqle.getMessage());
-        sqle.printStackTrace();
-        eligible = false; // default to not eligible on error
+        else if (t instanceof DailyTicket){
+            insert_ticket(conn, (DailyTicket) t);
         }
-    return eligible;
+        else if (t instanceof OneWayTicket){
+            insert_ticket(conn, (OneWayTicket) t);
+        }
     }
     
-    public static void insert_ticket(Connection conn, WeeklyTicket wt) {
+    private static void insert_ticket(Connection conn, WeeklyTicket wt) throws TicketInsertionException {
     // Eligibility check
-    if (!eligible(conn, wt.getID())){
-        System.out.println("Cannot register: User already has an active ticket!");
-        return;
+    if (!CRUD_Helpers.eligible(conn, wt.getID())){
+        throw new TicketInsertionException("User already has an active long-term ticket!");
     }
         
     String insertStmt = "INSERT INTO weekly_daily (id, start_date, end_date, ticket_type, location_name) VALUES (?, ?, ?, ?, ?)";
@@ -62,16 +52,14 @@ public class CRUD_Tickets {
     } 
     
     catch (SQLException sqle) {
-        System.out.println("Insert failed: " + sqle.getMessage());
-        sqle.printStackTrace();
+        throw new TicketInsertionException(sqle.getMessage());
         }
     }
     
-    public static void insert_ticket(Connection conn, DailyTicket dt){
+    private static void insert_ticket(Connection conn, DailyTicket dt) throws TicketInsertionException{
     // Eligibility check
-    if (!eligible(conn, dt.getID())){
-        System.out.println("Cannot register: User already has an active ticket!");
-        return;
+    if (!CRUD_Helpers.eligible(conn, dt.getID())){
+        throw new TicketInsertionException("User already has an active long-term ticket!");
     }
         
     String insertStmt = "INSERT INTO weekly_daily (id, start_date, end_date, ticket_type, location_name) VALUES (?, ?, ?, ?, ?)";
@@ -86,12 +74,11 @@ public class CRUD_Tickets {
         stmt.executeUpdate();
     }
     catch (SQLException sqle) {
-        System.out.println("Insert failed: " + sqle.getMessage());
-        sqle.printStackTrace();
+        throw new TicketInsertionException(sqle.getMessage());
         }
     }
     
-    public static void insert_ticket(Connection conn, OneWayTicket owt){
+    private static void insert_ticket(Connection conn, OneWayTicket owt) throws TicketInsertionException{
     String insertStmt = "INSERT INTO oneway (id, purchase_date, location_name, direction) VALUES(?, ?, ?, ?)";
     
     try (PreparedStatement stmt = conn.prepareStatement(insertStmt)){
@@ -103,38 +90,67 @@ public class CRUD_Tickets {
         stmt.executeUpdate();
     }
     catch(SQLException sqle){
-        System.out.println("Insert failed: " + sqle.getMessage());
-        sqle.printStackTrace();
+        throw new TicketInsertionException(sqle.getMessage());
         }
     }
     
-    // Search all tickets
-    public static void search_ticket(Connection conn, String id){
-    String weekly_daily_Stmt = "SELECT W.id, W.start_date, W.end_date, TI.ticket_type, TI.location_name, TI.morning_pickuptime, TI.afternoon_pickuptime"
-                             + "FROM weekly_daily W "
-                             + "JOIN ticket_information TI ON (W.ticket_type = TI.ticket_type AND W.location_name = TI.location_name"
-                             + "WHERE id = ?";
+    public static List<TicketDetails> search_tickets(Connection conn, String id){
     
-    String oneway_Stmt = "SELECT OW.id, OW.purchase_date, OW.direction, TI.location_name, TI.morning_pickuptime, TI.afternoon_pickuptime "
-                       + "FROM oneway OW JOIN ticket_information TI "
-                       + "ON (OW.ticket_type = TI.ticket_type AND OW.location_name = TI.location_name)"
-                       + "WHERE id = ?";
+    // Dynamic list of tickets
+    List<TicketDetails> ticket_details = new ArrayList<>();
     
+    String weekly_daily_Stmt = "SELECT W.start_date, W.end_date, TI.ticket_type, TI.location_name, TI.price, TI.morning_pickuptime, TI.afternoon_pickuptime "
+                         + "FROM weekly_daily W "
+                         + "JOIN ticket_information TI ON (W.ticket_type = TI.ticket_type AND W.location_name = TI.location_name) "
+                         + "WHERE W.id = ?";
     
+    String oneway_Stmt = "SELECT OW.purchase_date, OW.direction, TI.ticket_type, TI.location_name, TI.price, TI.morning_pickuptime, TI.afternoon_pickuptime "
+                       + "FROM oneway OW "
+                       + "JOIN ticket_information TI ON (TI.ticket_type = 'ONEWAY' AND OW.location_name = TI.location_name) "
+                       + "WHERE OW.id = ?";
+    
+    // Query long-term tickets
     try (PreparedStatement stmt = conn.prepareStatement(weekly_daily_Stmt)){
-       stmt.setString(1, id);
-       
-       ResultSet rSet = stmt.executeQuery();
-       while (rSet.next()){
-           // If current ticket is WEEKLY
-           if (rSet.getString("ticket_type").equals("WEEKLY")){
-               
-           }
-       }
+        stmt.setString(1, id);
+        ResultSet WD_rSet = stmt.executeQuery();
+        
+        while(WD_rSet.next()){
+            LocalDate start_date = WD_rSet.getDate("start_date").toLocalDate();
+            String location = WD_rSet.getString("location_name");  
+            long price = WD_rSet.getLong("price");
+            LocalDate end_date = WD_rSet.getDate("end_date").toLocalDate();
+            String type = WD_rSet.getString("ticket_type");
+            LocalTime morning_pickuptime = WD_rSet.getTime("morning_pickuptime").toLocalTime();
+            LocalTime afternoon_pickuptime = WD_rSet.getTime("afternoon_pickuptime").toLocalTime();
+            
+            ticket_details.add(new WeeklyDailyDetails(id, start_date, location, price, end_date, type, morning_pickuptime, afternoon_pickuptime));
+        }
     }
     catch (SQLException sqle){
         System.out.println("Search failed: " + sqle.getMessage());
         sqle.printStackTrace();
+    }
+    
+    // Query one way tickets
+    try (PreparedStatement stmt = conn.prepareStatement(oneway_Stmt)){
+        stmt.setString(1, id);
+        ResultSet OW_rSet = stmt.executeQuery();
+        
+        while(OW_rSet.next()){
+            LocalDate start_date = OW_rSet.getDate("start_date").toLocalDate();
+            String location = OW_rSet.getString("location_name");  
+            long price = OW_rSet.getLong("price");
+            String direction = OW_rSet.getString("direction");
+            LocalTime pickuptime = (direction.equals("T")) ? OW_rSet.getTime("morning_pickuptime").toLocalTime() : OW_rSet.getTime("afternoon_pickuptime").toLocalTime();  
+            
+            ticket_details.add(new OneWayDetails(id, start_date, location, price, direction, pickuptime));
         }
     }
+    catch(SQLException sqle){
+        System.out.println("Search failed: " + sqle.getMessage());
+        sqle.printStackTrace();
+    }
+    
+    return ticket_details;
+}
 }

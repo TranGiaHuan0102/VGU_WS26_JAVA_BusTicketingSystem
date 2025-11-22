@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 
-public class OneWayTicket extends Ticket implements Validatable{
+public class OneWayTicket extends Ticket{
     private final String direction;
     
     // Constructor
@@ -21,25 +21,6 @@ public class OneWayTicket extends Ticket implements Validatable{
     
     // Getters
     public String getDirection(){return this.direction;}
-    
-    @Override
-    public boolean isValid(){
-        boolean valid =  getStartDate().equals(LocalDate.now());
-        super.ExpiryMessage(!valid);
-        return valid;
-    }
-    
-    @Override
-    public boolean isExpired(){
-        boolean expired = !getStartDate().equals(LocalDate.now());
-        super.ExpiryMessage(expired);
-        return expired;
-    }
-    
-    @Override
-    public int remaining(){
-        return 0;
-    }
 }
 
 

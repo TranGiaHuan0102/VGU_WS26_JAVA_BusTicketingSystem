@@ -4,10 +4,13 @@ package com.ui;
  * @author caoda
  */
 
-import com.java.tickets.*;
-import com.controller.DatabaseController;
+
 import java.time.ZoneId;
 import java.time.LocalDate;
+
+import com.java.tickets.*;
+import com.controller.DatabaseController;
+import com.exceptions.TicketInsertionException;
 
 public class BusBooking extends javax.swing.JFrame {
     
@@ -287,11 +290,10 @@ public class BusBooking extends javax.swing.JFrame {
         if (jRadioButton3.isSelected()) {
             if (jComboBox2.getSelectedIndex() == 0) {
                 return 3;
-            }    
-        }
-        
-        if (jDateChooser1.getDate() == null) {
-            return 4;
+            }
+            if (jDateChooser1.getDate() == null) {
+                return 4;
+            }
         }
         return 0;
     }
@@ -317,11 +319,11 @@ public class BusBooking extends javax.swing.JFrame {
             default:
         }
         
-        // Create ticket objects
+        // Create ticket obj
         Ticket t;
         
         String location = (String) jComboBox1.getSelectedItem();
-        LocalDate start_date = jDateChooser1.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate start_date = LocalDate.now();             /* for long-term tickets, active from today */
         
         if (jRadioButton1.isSelected()){        /*daily*/
             t = DailyTicket.create(id, start_date, location);
@@ -330,11 +332,22 @@ public class BusBooking extends javax.swing.JFrame {
         else if (jRadioButton2.isSelected()){    /*weekly*/
             t = WeeklyTicket.create(id, start_date, location);
         }
-        else{
+        else{   /*one way*/
+            start_date = jDateChooser1.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();  /*for one way, pick departure*/
             String direction = (jComboBox2.getSelectedIndex() == 1) ? "T" : "F";    /* Determine direction*/
             t = OneWayTicket.create(id, start_date, location, direction);
         }
-        jLabel6.setText("Submitted!");    
+        
+        
+        // Insert ticket obj to db
+        try{
+            dbc.insert(t);
+            jLabel6.setText("Submitted!");
+        }
+        catch(TicketInsertionException TIe){
+            jLabel6.setText("Error:" + TIe.getMessage());
+            TIe.printStackTrace();
+        }
     }//GEN-LAST:event_SubmitButtonActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
