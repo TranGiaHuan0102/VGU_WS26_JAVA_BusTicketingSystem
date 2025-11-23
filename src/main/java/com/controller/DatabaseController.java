@@ -1,8 +1,11 @@
 package com.controller;
 
+import java.util.List;
+
 import com.database.DatabaseConnection;
 import com.exceptions.*;
 import com.java.tickets.Ticket;
+import com.java.ticketdetails.TicketDetails;
 
 
 public class DatabaseController {
@@ -24,7 +27,12 @@ public class DatabaseController {
     }
     
     // Search 
-    public void search(String id){
-        db.search(id);
+    public List<TicketDetails> search(String id) throws TicketSelectionException{
+        return db.search(id);
+    }
+    
+    // Delete expired tickets
+    public void delete_expired(String id) throws TicketDeletionException{
+        db.delete_expired(id);
     }
 }

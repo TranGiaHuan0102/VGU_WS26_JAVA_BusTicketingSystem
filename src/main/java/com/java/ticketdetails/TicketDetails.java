@@ -12,15 +12,24 @@ public abstract class TicketDetails {
     private final String location;
     private final long price;
     
-    
     // Default constructor
-    TicketDetails(String id, LocalDate start_date, String location, long price){
+    protected TicketDetails(String id, LocalDate start_date, String location, long price){
         this.id = id;
         this.start_date = start_date;
         this.location = location;
         this.price = price;
     }
     
+    // Getters
+    protected final String getID() {return this.id;}
+    protected final LocalDate getStartDate() {return this.start_date;}
+    protected final String getLocation() {return this.location;}
+    
     // Print ticket
-    // abstract void printTicket();
+    public abstract String printTicket();
+    
+    // Helper method for price formatting
+    protected String getFormattedPrice(){
+        return String.format("%,d VND", this.price);
+    }
 }

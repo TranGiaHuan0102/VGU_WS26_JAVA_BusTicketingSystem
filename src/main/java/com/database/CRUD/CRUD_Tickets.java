@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 import com.java.tickets.*;
 import com.java.ticketdetails.*;
-import com.exceptions.TicketInsertionException;
+import com.exceptions.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -94,7 +94,7 @@ public class CRUD_Tickets {
         }
     }
     
-    public static List<TicketDetails> search_tickets(Connection conn, String id){
+    public static List<TicketDetails> search_tickets(Connection conn, String id) throws TicketSelectionException{
     
     // Dynamic list of tickets
     List<TicketDetails> ticket_details = new ArrayList<>();
@@ -104,9 +104,9 @@ public class CRUD_Tickets {
                          + "JOIN ticket_information TI ON (W.ticket_type = TI.ticket_type AND W.location_name = TI.location_name) "
                          + "WHERE W.id = ?";
     
-    String oneway_Stmt = "SELECT OW.purchase_date, OW.direction, TI.ticket_type, TI.location_name, TI.price, TI.morning_pickuptime, TI.afternoon_pickuptime "
+    String oneway_Stmt = "SELECT OW.purchase_date, OW.direction, TI.ticket_type, TI.location_name, OW.price, TI.morning_pickuptime, TI.afternoon_pickuptime "
                        + "FROM oneway OW "
-                       + "JOIN ticket_information TI ON (TI.ticket_type = 'ONEWAY' AND OW.location_name = TI.location_name) "
+                       + "JOIN ticket_information TI ON (OW.ticket_type = TI.ticket_type AND OW.location_name = TI.location_name) "
                        + "WHERE OW.id = ?";
     
     // Query long-term tickets
@@ -127,8 +127,7 @@ public class CRUD_Tickets {
         }
     }
     catch (SQLException sqle){
-        System.out.println("Search failed: " + sqle.getMessage());
-        sqle.printStackTrace();
+        throw new TicketSelectionException(sqle.getMessage());
     }
     
     // Query one way tickets
@@ -137,7 +136,7 @@ public class CRUD_Tickets {
         ResultSet OW_rSet = stmt.executeQuery();
         
         while(OW_rSet.next()){
-            LocalDate start_date = OW_rSet.getDate("start_date").toLocalDate();
+            LocalDate start_date = OW_rSet.getDate("purchase_date").toLocalDate();
             String location = OW_rSet.getString("location_name");  
             long price = OW_rSet.getLong("price");
             String direction = OW_rSet.getString("direction");
@@ -147,10 +146,33 @@ public class CRUD_Tickets {
         }
     }
     catch(SQLException sqle){
-        System.out.println("Search failed: " + sqle.getMessage());
-        sqle.printStackTrace();
+        throw new TicketSelectionException(sqle.getMessage());
     }
     
     return ticket_details;
-}
+    }
+    
+    public static void delete_tickets(Connection conn, String id) throws TicketDeletionException{
+        String delete_weekly_daily_Stmt = "DELETE FROM weekly_daily WHERE (ID = ? AND end_date < CURRENT_DATE)";
+        
+        String delete_oneway_Stmt = "DELETE FROM oneway WHERE (ID = ? AND purchase_date < CURRENT_DATE)";
+        
+        // Delete from WEEKLY_DAILY
+        try(PreparedStatement stmt = conn.prepareStatement(delete_weekly_daily_Stmt)){
+            stmt.setString(1, id);
+            stmt.executeUpdate();
+        }
+        catch (SQLException sqle){
+            throw new TicketDeletionException(sqle.getMessage());
+        }
+        
+        // Delete from ONEWAY
+        try(PreparedStatement stmt = conn.prepareStatement(delete_oneway_Stmt)){
+            stmt.setString(1, id);
+            stmt.executeUpdate();
+        }
+        catch (SQLException sqle){
+            throw new TicketDeletionException(sqle.getMessage());
+        }
+    }
 }

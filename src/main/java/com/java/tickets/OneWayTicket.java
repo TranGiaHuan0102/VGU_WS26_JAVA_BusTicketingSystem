@@ -1,8 +1,6 @@
 package com.java.tickets;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
-
 
 public class OneWayTicket extends Ticket{
     private final String direction;
