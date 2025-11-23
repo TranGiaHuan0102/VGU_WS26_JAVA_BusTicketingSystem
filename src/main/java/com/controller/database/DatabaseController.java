@@ -1,15 +1,17 @@
-package com.controller;
+package com.controller.database;
+
 
 import java.util.List;
 
 import com.database.DatabaseConnection;
 import com.exceptions.*;
-import com.java.tickets.Ticket;
-import com.java.ticketdetails.TicketDetails;
+import com.controller.java.tickets.Ticket;
+import com.controller.java.ticketdetails.TicketDetails;
+import com.controller.java.users.User;
 
 
 public class DatabaseController {
-    private DatabaseConnection db;
+    private final DatabaseConnection db;
     
     // Controller constructor
     public DatabaseController() throws DatabaseConnectionException{
@@ -26,9 +28,18 @@ public class DatabaseController {
         db.insert(t);
     }
     
-    // Search 
+    public void insert(User u) throws NewUserException{
+        db.insert(u);
+    }
+    
+    // Search ticket with ID
     public List<TicketDetails> search(String id) throws TicketSelectionException{
         return db.search(id);
+    }
+    
+    // Search user with ID and password
+    public User search_user(String id) throws UserSelectionException, LogInException{
+        return db.search_user(id);
     }
     
     // Delete expired tickets

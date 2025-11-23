@@ -1,9 +1,9 @@
-package com.ui;
+package com.GUI;
 /**
  *
  * @author caoda
  */
-import com.controller.DatabaseController;
+import com.controller.database.DatabaseController;
 import com.exceptions.DatabaseConnectionException;
 
 public class MainMenu extends javax.swing.JFrame {
@@ -64,11 +64,11 @@ public class MainMenu extends javax.swing.JFrame {
 
         MainMenuLabel.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         MainMenuLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        MainMenuLabel.setText("Main Menu");
+        MainMenuLabel.setText("Bus App");
         MainMenuLabel.setToolTipText("");
 
         StudentLoginButton.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        StudentLoginButton.setText("Student Login");
+        StudentLoginButton.setText("Log In as Student");
         StudentLoginButton.addActionListener(this::StudentLoginButtonActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -76,23 +76,23 @@ public class MainMenu extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(282, Short.MAX_VALUE)
+                .addContainerGap(271, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(StudentLoginButton)
-                        .addGap(287, 287, 287))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(MainMenuLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(278, 278, 278))))
+                        .addGap(278, 278, 278))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(StudentLoginButton)
+                        .addGap(268, 268, 268))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(82, 82, 82)
                 .addComponent(MainMenuLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 114, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 111, Short.MAX_VALUE)
                 .addComponent(StudentLoginButton)
-                .addGap(96, 96, 96))
+                .addGap(99, 99, 99))
         );
 
         pack();

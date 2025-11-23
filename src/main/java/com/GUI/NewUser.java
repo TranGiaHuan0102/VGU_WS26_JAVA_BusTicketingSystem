@@ -2,13 +2,17 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package com.ui;
+package com.GUI;
 
 /**
  *
  * @author caoda
  */
-import com.controller.DatabaseController;
+import com.controller.java.users.Student;
+import com.controller.java.users.User;
+import com.controller.database.DatabaseController;
+import com.exceptions.*;
+
 public class NewUser extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(NewUser.class.getName());
@@ -68,7 +72,7 @@ public class NewUser extends javax.swing.JFrame {
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("New User Register");
+        jLabel2.setText("Register as New Student");
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel3.setText("Last Name:");
@@ -78,7 +82,7 @@ public class NewUser extends javax.swing.JFrame {
         IDField.addActionListener(this::IDFieldActionPerformed);
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel5.setText("Student's ID:");
+        jLabel5.setText("Student ID:");
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel6.setText("Password:");
@@ -93,7 +97,7 @@ public class NewUser extends javax.swing.JFrame {
         RegisterButton.addActionListener(this::RegisterButtonActionPerformed);
 
         SignInButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        SignInButton.setText("Already have account? Sign in");
+        SignInButton.setText("Already have an account? Sign In!");
         SignInButton.addActionListener(this::SignInButtonActionPerformed);
 
         ErrorMg.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -104,10 +108,6 @@ public class NewUser extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(286, 286, 286))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -140,7 +140,11 @@ public class NewUser extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(306, 306, 306)
                         .addComponent(ErrorMg, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(84, Short.MAX_VALUE))
+                .addContainerGap(89, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addGap(265, 265, 265))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -190,35 +194,55 @@ public class NewUser extends javax.swing.JFrame {
     
     
     private void RegisterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegisterButtonActionPerformed
-        // TODO add your handling code here:
+
         String id = IDField.getText().trim();
         String fname = FNameField.getText().trim();
         String lname = LNameField.getText().trim();
         String email = EmailField.getText().trim();
         String password = new String(jPasswordField1.getPassword()).trim();
         
+        // ID check
+        if(id.isEmpty()){
+            ErrorMg.setText("Please input your ID!");
+            return;
+        }
+        else if(!id.matches("\\d{8}")){
+            ErrorMg.setText("Invalid ID!");
+            return;
+        }
+        
+        // Name check
         if(fname.isEmpty() || lname.isEmpty()){
-            ErrorMg.setText("Please Input your Name");
+            ErrorMg.setText("Please input your name!");
+            return;
         }
-        else if(id.isEmpty()){
-            ErrorMg.setText("Please Input Your ID");
-            if(!id.matches("\\d{8}")){
-                ErrorMg.setText("ID must be 8 DITGITS");
-            }
+        
+        // Email check
+        if(email.isEmpty()){
+            ErrorMg.setText("Please input your email!");
+            return;
         }
-        else if(email.isEmpty()){
-            ErrorMg.setText("Please Input Your Email");
-            if(!email.matches("^[A-Za-z0-9_.]+[@][A-Za-z.]+$")){
-                ErrorMg.setText("Please Input Valid Email");
-            }
+        else if(!email.matches("^(?=.{1,254}$)(?=.{1,64}@)[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:(?:[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\\.)+[A-Za-z]{2,}|\\[(?:IPv6:[A-F0-9]{0,4}(?::[A-F0-9]{0,4}){2,7}|(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))\\])$")){
+            ErrorMg.setText("Invalid email!");
+            return;
         }
-        else{
-            ErrorMg.setText("");
-            dispose();
-            UserLogin ul = new UserLogin(dbc);
-            ul.setVisible(true);
-            ul.setLocationRelativeTo(null);
-        }  
+        
+        // Password check
+        if (password.isEmpty()){
+            ErrorMg.setText("Please input your password!");
+            return;
+        }
+        
+        // Create a student object
+        User u = new Student(fname, lname, email, password, id);
+        try{
+            dbc.insert(u);  /* Add student to db */
+            ErrorMg.setText("User with ID " + id + " successfully created!");
+        }
+        catch(NewUserException NUe){
+            ErrorMg.setText("User with ID " + id + " already existed!");
+            System.out.print(NUe.getMessage());
+        }
     }//GEN-LAST:event_RegisterButtonActionPerformed
 
     private void SignInButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignInButtonActionPerformed

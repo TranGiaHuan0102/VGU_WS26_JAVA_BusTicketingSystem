@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
-public class CRUD_Helpers {
+public class CRUD_TicketHelpers {
     protected static boolean eligible(Connection conn, String id){
         // Can only re-register if current daily/weekly ticket expires
         boolean eligible = true;

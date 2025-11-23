@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<configuration>
-    <database>
-        <url>jdbc:postgresql://localhost:5432/BusTicketManagementSystem</url>
-        <user>postgres</user>
-        <password>J2KYYkajA2</password>
-    </database>
-</configuration>

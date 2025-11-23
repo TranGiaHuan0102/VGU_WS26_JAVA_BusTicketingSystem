@@ -1,4 +1,4 @@
-package com.java.tickets;
+package com.controller.java.tickets;
 
 import java.time.LocalDate;
 
