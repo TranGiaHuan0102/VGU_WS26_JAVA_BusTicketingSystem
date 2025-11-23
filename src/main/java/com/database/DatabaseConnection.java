@@ -3,9 +3,11 @@ package com.database;
 import java.sql.DriverManager;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.ResultSet;
+
+import java.util.List;
 
 import com.java.tickets.Ticket;
+import com.java.ticketdetails.TicketDetails;
 import com.database.CRUD.CRUD_Tickets;
 import com.exceptions.*;
 
@@ -46,7 +48,12 @@ public class DatabaseConnection {
     }
     
     // Search tickets of ID
-    public void search(String id){
-        CRUD_Tickets.search_tickets(conn, id);
+    public List<TicketDetails> search(String id) throws TicketSelectionException{
+        return CRUD_Tickets.search_tickets(conn, id);
+    }
+    
+    // Delete expired tickets
+    public void delete_expired(String id) throws TicketDeletionException{
+        CRUD_Tickets.delete_tickets(conn, id);
     }
 }

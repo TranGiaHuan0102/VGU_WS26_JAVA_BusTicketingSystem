@@ -10,7 +10,7 @@ public abstract class Ticket{
     
     
     // Constructor
-    private Ticket(String id, LocalDate start_date, String location){
+    protected Ticket(String id, LocalDate start_date, String location){
         this.id = id;
         this.start_date = start_date;
         this.location = location;

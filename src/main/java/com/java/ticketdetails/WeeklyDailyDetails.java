@@ -6,6 +6,8 @@ package com.java.ticketdetails;
  */
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
+import java.lang.StringBuilder;
 
 public class WeeklyDailyDetails extends TicketDetails{
     private final LocalDate expiry_date;
@@ -19,5 +21,36 @@ public class WeeklyDailyDetails extends TicketDetails{
         this.type = type;
         this.morning_pickuptime = morning_pickuptime;
         this.afternoon_pickuptime = afternoon_pickuptime;
+    }
+    
+    private int DaysUntilExpiry(){
+        return (int) ChronoUnit.DAYS.between(LocalDate.now(), expiry_date);
+    }
+    
+    @Override
+    public final String printTicket(){
+        StringBuilder ticket_detail = new StringBuilder();
+        
+        ticket_detail.append("Student ID: ").append(getID()).append("\n");
+        ticket_detail.append("Type: ").append(this.type).append("\n");
+        ticket_detail.append("Price: ").append(getFormattedPrice()).append("\n");
+        
+        ticket_detail.append("Journey: VGU - ").append(getLocation()).append("\n");
+        
+        String active_period = "Active: " + getStartDate().toString() + " to " + this.expiry_date.toString();
+        ticket_detail.append(active_period).append("\n");
+        
+        String morning = "Morning: " + this.morning_pickuptime.toString() + " at " + getLocation();
+        String afternoon = "Afternoon: " + this.afternoon_pickuptime.toString() + " at VGU";
+        ticket_detail.append("Pickup Schedule:\n").append(morning).append("\n").append(afternoon).append("\n");
+        
+        if (DaysUntilExpiry() <= 0){
+            ticket_detail.append("Ticket EXPIRED! Please purchase a new ticket to continue using service!").append("\n");
+        }
+        else{
+            ticket_detail.append("Ticket ACTIVE! ").append(Integer.toString(DaysUntilExpiry())).append(" days until expiry!").append("\n");
+        }
+        
+        return ticket_detail.toString();
     }
 }
