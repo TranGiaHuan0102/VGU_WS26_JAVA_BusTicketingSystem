@@ -1,17 +1,19 @@
-package com.ui;
+package com.GUI;
 /**
  *
  * @author caoda
  */
 
 
+import com.controller.java.tickets.Ticket;
+import com.controller.java.tickets.OneWayTicket;
+import com.controller.java.tickets.DailyTicket;
+import com.controller.java.tickets.WeeklyTicket;
 import java.time.ZoneId;
 import java.time.LocalDate;
-import java.time.Instant;
-import java.util.Date;
 
-import com.java.tickets.*;
-import com.controller.DatabaseController;
+
+import com.controller.database.DatabaseController;
 import com.exceptions.TicketInsertionException;
 
 public class BusBooking extends javax.swing.JFrame {
@@ -19,16 +21,18 @@ public class BusBooking extends javax.swing.JFrame {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(BusBooking.class.getName());
     private final DatabaseController dbc;
     private final String id;
+    private final String username;
     /**
      * Creates new form BusBooking
      */
     
-    public BusBooking(DatabaseController dbc, String id) {
+    public BusBooking(DatabaseController dbc, String id, String username) {
         initComponents();
         setTicketType();
 
         this.dbc = dbc;
         this.id = id;
+        this.username = username;
         
         // CLOSE BUTTON
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -291,17 +295,14 @@ public class BusBooking extends javax.swing.JFrame {
                 return 4;
             }
         }
-        Date chooseDate = jDateChooser1.getDate();
-        if(chooseDate != null){
-            LocalDate selectedDate = chooseDate.toInstant()
-                                               .atZone(ZoneId.systemDefault())
-                                               .toLocalDate();
-            LocalDate currentDate = LocalDate.now();
-            if(selectedDate.isBefore(currentDate)){
-                return 5;
-            }
-        }
         
+        // Only accept oneway tickets booked at least 3 days in advance
+        LocalDate selectedDate = jDateChooser1.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate threeDaysLater = LocalDate.now().plusDays(3);
+        
+        if (selectedDate.isBefore(threeDaysLater)){
+            return 5;
+        }
         return 0;
     }
     
@@ -324,7 +325,7 @@ public class BusBooking extends javax.swing.JFrame {
                 jLabel6.setText("Please select a departure date!");
                 return;
             case 5:
-                jLabel6.setText("Please select valid date!");
+                jLabel6.setText("One way tickets must be booked at least 3 days in advance");
                 return;
             default:
         }
@@ -354,15 +355,15 @@ public class BusBooking extends javax.swing.JFrame {
             jLabel6.setText("Submitted!");
         }
         catch(TicketInsertionException TIe){
-            jLabel6.setText("Error:" + TIe.getMessage());
-            TIe.printStackTrace();
+            jLabel6.setText("Unable to book more tickets on this date!");
+            System.out.println(TIe.getMessage());
         }
     }//GEN-LAST:event_SubmitButtonActionPerformed
 
     private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed
         // TODO add your handling code here:
         this.dispose();
-        Menu m = new Menu(dbc, id);
+        UserMenu m = new UserMenu(dbc, id, username);
         m.setVisible(true);
         m.setLocationRelativeTo(null);
     }//GEN-LAST:event_BackButtonActionPerformed

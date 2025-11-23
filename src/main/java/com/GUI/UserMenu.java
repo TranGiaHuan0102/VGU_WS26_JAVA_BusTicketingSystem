@@ -2,16 +2,18 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package com.ui;
+package com.GUI;
 /**
  *
  * @author caoda
  */
+import com.exceptions.TicketSelectionException;
+import com.exceptions.TicketDeletionException;
 import java.util.List;
 
-import com.controller.DatabaseController;
+import com.controller.database.DatabaseController;
 import com.exceptions.*;
-import com.java.ticketdetails.TicketDetails;
+import com.controller.java.ticketdetails.TicketDetails;
 
 import javax.swing.JOptionPane;
 import javax.swing.JDialog;
@@ -22,20 +24,22 @@ import java.awt.Insets;
 
 import java.lang.StringBuilder;
 
-public class Menu extends javax.swing.JFrame {
+public class UserMenu extends javax.swing.JFrame {
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Menu.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(UserMenu.class.getName());
     private final DatabaseController dbc;
     private final String id;
+    private final String username;
     /**
      * Creates new form Menu
      */
 
-    public Menu(DatabaseController dbc, String id){
+    public UserMenu(DatabaseController dbc, String id, String username){
         initComponents();
         this.dbc = dbc;
         this.id = id;
-        jLabel2.setText("Welcome!" + " " + id);
+        this.username = username;
+        jLabel2.setText("Welcome, " + this.username + "!");
         // CLOSE BUTTON
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
@@ -61,7 +65,7 @@ public class Menu extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        MyTicketButton = new javax.swing.JButton();
+        SeeTicketsButton = new javax.swing.JButton();
         BuyTicketButton = new javax.swing.JButton();
         SignOutButton = new javax.swing.JButton();
         DeleteExpiredTickets = new javax.swing.JButton();
@@ -83,7 +87,7 @@ public class Menu extends javax.swing.JFrame {
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("Welcome!");
+        jLabel2.setText("Welcome, ");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -102,12 +106,12 @@ public class Menu extends javax.swing.JFrame {
                 .addContainerGap(30, Short.MAX_VALUE))
         );
 
-        MyTicketButton.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        MyTicketButton.setText("My Ticket");
-        MyTicketButton.addActionListener(this::MyTicketButtonActionPerformed);
+        SeeTicketsButton.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        SeeTicketsButton.setText("See Tickets");
+        SeeTicketsButton.addActionListener(this::SeeTicketsButtonActionPerformed);
 
         BuyTicketButton.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        BuyTicketButton.setText("Buy Ticket");
+        BuyTicketButton.setText("Buy Tickets");
         BuyTicketButton.addActionListener(this::BuyTicketButtonActionPerformed);
 
         SignOutButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -129,7 +133,7 @@ public class Menu extends javax.swing.JFrame {
                 .addGap(299, 299, 299)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(BuyTicketButton, javax.swing.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE)
-                    .addComponent(MyTicketButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(SeeTicketsButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
@@ -145,7 +149,7 @@ public class Menu extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
                 .addComponent(BuyTicketButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(56, 56, 56)
-                .addComponent(MyTicketButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(SeeTicketsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(64, 64, 64)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(SignOutButton)
@@ -173,7 +177,7 @@ public class Menu extends javax.swing.JFrame {
     }
     
     // My Ticket Button
-    private void MyTicketButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MyTicketButtonActionPerformed
+    private void SeeTicketsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SeeTicketsButtonActionPerformed
         try{
             List<TicketDetails> ticket_details = dbc.search(id);
             
@@ -204,12 +208,12 @@ public class Menu extends javax.swing.JFrame {
         catch(TicketSelectionException TSe){
             JOptionPane.showMessageDialog(this, "Error finding tickets: " + TSe.getMessage());
         }
-    }//GEN-LAST:event_MyTicketButtonActionPerformed
+    }//GEN-LAST:event_SeeTicketsButtonActionPerformed
 
     // Buy Ticket Button
     private void BuyTicketButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BuyTicketButtonActionPerformed
         this.dispose();
-        BusBooking BB = new BusBooking(dbc, id);
+        BusBooking BB = new BusBooking(dbc, id, username);
         BB.setVisible(true);
         BB.setLocationRelativeTo(null);
     }//GEN-LAST:event_BuyTicketButtonActionPerformed
@@ -236,7 +240,7 @@ public class Menu extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BuyTicketButton;
     private javax.swing.JButton DeleteExpiredTickets;
-    private javax.swing.JButton MyTicketButton;
+    private javax.swing.JButton SeeTicketsButton;
     private javax.swing.JButton SignOutButton;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JLabel jLabel1;

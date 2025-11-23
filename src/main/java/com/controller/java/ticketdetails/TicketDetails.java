@@ -1,4 +1,4 @@
-package com.java.ticketdetails;
+package com.controller.java.ticketdetails;
 
 /**
  *

@@ -1,4 +1,4 @@
-package com.java.ticketdetails;
+package com.controller.java.ticketdetails;
 
 /**
  *
@@ -13,8 +13,8 @@ public class OneWayDetails extends TicketDetails{
     private final String direction;
     private final LocalTime pickuptime;
     
-    public OneWayDetails(String id, LocalDate start_date, String location, long price, String direction, LocalTime pickuptime){
-        super(id, start_date, location, price);
+    public OneWayDetails(String id, LocalDate start_date, String location, String direction, LocalTime pickuptime){
+        super(id, start_date, location, 150000);
         this.direction = direction;
         this.pickuptime = pickuptime;
     }

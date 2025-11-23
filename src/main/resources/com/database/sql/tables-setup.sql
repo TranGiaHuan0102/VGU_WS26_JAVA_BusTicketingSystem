@@ -1,8 +1,11 @@
--- Drop tables if needed
-DROP TABLE IF EXISTS public.oneway;
-DROP TABLE IF EXISTS public.weekly_daily;
-DROP TABLE IF EXISTS public.ticket_information;
-DROP TABLE IF EXISTS public.locations;
+-- To run this setup file, use: psql -U postgres -d BusTicketManagementSystem -f tables-setup.sql
+
+-- Uncomment if need fresh db (this will wipe existing data)
+-- DROP TABLE IF EXISTS public.oneway;
+-- DROP TABLE IF EXISTS public.weekly_daily;
+-- DROP TABLE IF EXISTS public.ticket_information;
+-- DROP TABLE IF EXISTS public.locations;
+-- DROP TABLE IF EXISTS public.user;
 
 -- Table: public.locations
 
@@ -29,11 +32,10 @@ Becamex Tower
 
 -- Table: public.ticket_information
 
-
 CREATE TABLE IF NOT EXISTS public.ticket_information
 (
     location_name character varying(256) COLLATE pg_catalog."default" NOT NULL,
-    ticket_type character varying(20) COLLATE pg_catalog."default" NOT NULL,
+    ticket_type character varying(10) COLLATE pg_catalog."default" NOT NULL,
     price bigint NOT NULL,
     morning_pickuptime time without time zone NOT NULL,
     afternoon_pickuptime time without time zone NOT NULL,
@@ -52,7 +54,7 @@ ALTER TABLE IF EXISTS public.ticket_information
 
 -- Seed ticket information data
 COPY public.ticket_information (location_name, ticket_type, price, morning_pickuptime, afternoon_pickuptime) FROM STDIN WITH (FORMAT CSV);
-Turtle Lake,WEEKLY,450000,06:00:00,16:30:00
+Turtle Lake,WEEKLY,4500000,06:00:00,16:30:00
 Turtle Lake,DAILY,8500000,06:45:00,16:30:00
 Hang Xanh,WEEKLY,6700000,06:10:00,16:30:00
 Hang Xanh,DAILY,8000000,06:55:00,16:30:00
@@ -66,19 +68,38 @@ Becamex Tower,WEEKLY,1900000,07:20:00,16:30:00
 Becamex Tower,DAILY,3600000,07:50:00,16:30:00
 \.
 
+-- Table: public.user
+
+CREATE TABLE IF NOT EXISTS public."user"
+(
+    id character varying(8) COLLATE pg_catalog."default" NOT NULL,
+    first_name character varying(256) COLLATE pg_catalog."default" NOT NULL,
+    last_name character varying(256) COLLATE pg_catalog."default" NOT NULL,
+    password character varying(256) COLLATE pg_catalog."default" NOT NULL,
+    email character varying(256) COLLATE pg_catalog."default" NOT NULL,
+    user_type character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT id_pk PRIMARY KEY (id),
+    CONSTRAINT user_type_check CHECK (user_type::text = ANY (ARRAY['STUDENT'::character varying::text, 'INSTRUCTOR'::character varying::text, 'GUEST'::character varying::text]))
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public."user"
+    OWNER to postgres;
 
 -- Table: public.weekly_daily
-
-
-
 CREATE TABLE IF NOT EXISTS public.weekly_daily
 (
     id character varying(8) COLLATE pg_catalog."default" NOT NULL,
     start_date date NOT NULL,
     end_date date NOT NULL,
-    ticket_type character varying(6) COLLATE pg_catalog."default" NOT NULL,
+    ticket_type character varying(10) COLLATE pg_catalog."default" NOT NULL,
     location_name character varying(256) COLLATE pg_catalog."default" NOT NULL,
     CONSTRAINT weekly_daily_pk PRIMARY KEY (id, start_date),
+    CONSTRAINT id_fk FOREIGN KEY (id)
+        REFERENCES public."user" (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE,
     CONSTRAINT ticket_info_fk FOREIGN KEY (location_name, ticket_type)
         REFERENCES public.ticket_information (location_name, ticket_type) MATCH SIMPLE
         ON UPDATE NO ACTION
@@ -92,23 +113,23 @@ ALTER TABLE IF EXISTS public.weekly_daily
 
 -- Table: public.oneway
 
-
-
 CREATE TABLE IF NOT EXISTS public.oneway
 (
     id character varying(8) COLLATE pg_catalog."default" NOT NULL,
-    purchase_date date NOT NULL,
+    departure_date date NOT NULL,
     location_name character varying(256) COLLATE pg_catalog."default",
-    ticket_type character varying(6) COLLATE pg_catalog."default" DEFAULT 'DAILY'::character varying,
+    ticket_type character varying(10) COLLATE pg_catalog."default" DEFAULT 'DAILY'::character varying,
     direction character(1) COLLATE pg_catalog."default" NOT NULL,
-    price bigint DEFAULT 150000,
-    CONSTRAINT oneway_pk PRIMARY KEY (id, purchase_date),
+    CONSTRAINT oneway_pk PRIMARY KEY (id, departure_date, direction),
+    CONSTRAINT id_fk FOREIGN KEY (id)
+        REFERENCES public."user" (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE,
     CONSTRAINT ticket_info_fk FOREIGN KEY (location_name, ticket_type)
         REFERENCES public.ticket_information (location_name, ticket_type) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION,
     CONSTRAINT oneway_direction_check CHECK (direction = ANY (ARRAY['T'::bpchar, 'F'::bpchar])),
-    CONSTRAINT oneway_price_check CHECK (price = 150000),
     CONSTRAINT oneway_ticket_type_check CHECK (ticket_type::text = 'DAILY'::text)
 )
 
