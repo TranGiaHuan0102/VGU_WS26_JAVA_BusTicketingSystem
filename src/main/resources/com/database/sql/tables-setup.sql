@@ -1,11 +1,11 @@
 -- To run this setup file, use: psql -U postgres -d BusTicketManagementSystem -f tables-setup.sql
 
 -- Uncomment if need fresh db (this will wipe existing data)
--- DROP TABLE IF EXISTS public.oneway;
--- DROP TABLE IF EXISTS public.longterm;
--- DROP TABLE IF EXISTS public.ticket_information;
--- DROP TABLE IF EXISTS public.locations;
--- DROP TABLE IF EXISTS public.user;
+DROP TABLE IF EXISTS public.oneway;
+DROP TABLE IF EXISTS public.longterm;
+DROP TABLE IF EXISTS public.ticket_information;
+DROP TABLE IF EXISTS public.locations;
+DROP TABLE IF EXISTS public.user;
 
 -- Table: public.locations
 
@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS public.user
     email character varying(256) COLLATE pg_catalog."default" NOT NULL,
     user_type character varying(10) COLLATE pg_catalog."default" NOT NULL,
     CONSTRAINT id_pk PRIMARY KEY (id),
-    CONSTRAINT user_type_check CHECK (user_type::text = ANY (ARRAY['STUDENT'::character varying::text, 'INSTRUCTOR'::character varying::text, 'GUEST'::character varying::text]))
+    CONSTRAINT user_type_check CHECK (user_type::text = ANY (ARRAY['STUDENT'::character varying::text, 'PROFESSOR'::character varying::text, 'GUEST'::character varying::text]))
 )
 
 TABLESPACE pg_default;

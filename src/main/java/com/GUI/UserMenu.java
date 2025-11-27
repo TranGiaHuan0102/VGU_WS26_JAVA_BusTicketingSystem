@@ -26,24 +26,37 @@ import java.util.List;
 import com.controller.database.DatabaseController;
 import com.controller.java.ticketdetails.TicketDetails;
 import com.exceptions.TicketSelectionException;
-import com.exceptions.TicketDeletionException;
 
 public class UserMenu extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(UserMenu.class.getName());
     private final DatabaseController dbc;
+    private final String user_type;
     private final String id;
     private final String username;
     /**
      * Creates new form Menu
      */
 
-    public UserMenu(DatabaseController dbc, String id, String username){
+    public UserMenu(DatabaseController dbc, String user_type, String id, String username){
         initComponents();
+        // ADD DB CONTROLLER
         this.dbc = dbc;
+        
+        // SET USER INFO
+        this.user_type = user_type;
         this.id = id;
         this.username = username;
-        jLabel2.setText("Welcome, " + this.username + "!");
+        
+        // UPDATE TITLE CARD BASED ON USER TYPE
+        if (user_type.equals("Student")){
+            UserMenuWelcomeMessage.setText("What's good, " + this.username + "?");
+        }
+        else{
+            UserMenuWelcomeMessage.setText("Warmest salutations, Prof. " + this.username + "!");
+        }
+        
+        
         // CLOSE BUTTON
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
@@ -68,11 +81,10 @@ public class UserMenu extends javax.swing.JFrame {
         jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
+        UserMenuWelcomeMessage = new javax.swing.JLabel();
         SeeTicketsButton = new javax.swing.JButton();
         BuyTicketButton = new javax.swing.JButton();
         SignOutButton = new javax.swing.JButton();
-        DeleteExpiredTickets = new javax.swing.JButton();
 
         jMenu1.setText("jMenu1");
 
@@ -89,25 +101,25 @@ public class UserMenu extends javax.swing.JFrame {
 
         jPanel1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(255, 153, 51), 5, true));
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("Welcome, ");
+        UserMenuWelcomeMessage.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        UserMenuWelcomeMessage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        UserMenuWelcomeMessage.setText("W");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(306, 306, 306)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(327, Short.MAX_VALUE))
+                .addGap(124, 124, 124)
+                .addComponent(UserMenuWelcomeMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 612, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(145, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addGap(16, 16, 16)
+                .addComponent(UserMenuWelcomeMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(24, Short.MAX_VALUE))
         );
 
         SeeTicketsButton.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -122,12 +134,6 @@ public class UserMenu extends javax.swing.JFrame {
         SignOutButton.setText("Sign out");
         SignOutButton.addActionListener(this::SignOutButtonActionPerformed);
 
-        DeleteExpiredTickets.setText("Delete Expired Tickets");
-        DeleteExpiredTickets.setToolTipText("");
-        DeleteExpiredTickets.setMaximumSize(new java.awt.Dimension(90, 25));
-        DeleteExpiredTickets.setMinimumSize(new java.awt.Dimension(90, 25));
-        DeleteExpiredTickets.addActionListener(this::DeleteExpiredTicketsActionPerformed);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -140,9 +146,7 @@ public class UserMenu extends javax.swing.JFrame {
                     .addComponent(SeeTicketsButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(DeleteExpiredTickets, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(SignOutButton)
                 .addGap(30, 30, 30))
         );
@@ -154,11 +158,9 @@ public class UserMenu extends javax.swing.JFrame {
                 .addComponent(BuyTicketButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(56, 56, 56)
                 .addComponent(SeeTicketsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(64, 64, 64)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(SignOutButton)
-                    .addComponent(DeleteExpiredTickets, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(16, 16, 16))
+                .addGap(70, 70, 70)
+                .addComponent(SignOutButton)
+                .addGap(17, 17, 17))
         );
 
         pack();
@@ -225,7 +227,7 @@ public class UserMenu extends javax.swing.JFrame {
     // Helper to create LongTerm table
     private JTable createLongTermTable(List<TicketDetails> longterm_details){
         // Define column names
-        String[] column_names = {"Student ID", "Type", "Active Date", "Expiry Date", "Bus Stop", "Price", "Morning Pick-up", "Afternoon Pick-up", "Expiry Status"};
+        String[] column_names = {"ID", "Type", "Active Date", "Expiry Date", "Bus Stop", "Price", "Morning Pick-up", "Afternoon Pick-up", "Expiry Status"};
         
         // Create data array
         Object[][] data = new Object[longterm_details.size()][column_names.length];
@@ -250,7 +252,7 @@ public class UserMenu extends javax.swing.JFrame {
     // Helper to create OneWay Table
     private JTable createOneWayTable(List<TicketDetails> oneway_details){
         // Define column names
-        String[] column_names = {"Student ID", "Departure Date", "Bus Stop", "Price", "Pick-up Time", "Direction"};
+        String[] column_names = {"ID", "Departure Date", "Bus Stop", "Price", "Pick-up Time", "Direction"};
         
         // Create data array
         Object[][] data = new Object[oneway_details.size()][column_names.length];
@@ -274,7 +276,7 @@ public class UserMenu extends javax.swing.JFrame {
     // Buy Ticket Button
     private void BuyTicketButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BuyTicketButtonActionPerformed
         this.dispose();
-        BusBooking BB = new BusBooking(dbc, id, username);
+        BusBooking BB = new BusBooking(dbc, user_type, id, username);
         BB.setVisible(true);
         BB.setLocationRelativeTo(null);
     }//GEN-LAST:event_BuyTicketButtonActionPerformed
@@ -282,30 +284,19 @@ public class UserMenu extends javax.swing.JFrame {
     // Sign Out Button
     private void SignOutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignOutButtonActionPerformed
         this.dispose();
-        UserLogin ul = new UserLogin(dbc);
+        UserLogin ul = new UserLogin(dbc, user_type);
         ul.setVisible(true);
         ul.setLocationRelativeTo(null);
     }//GEN-LAST:event_SignOutButtonActionPerformed
 
-    // Delete Expired Tickets Buttion
-    private void DeleteExpiredTicketsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteExpiredTicketsActionPerformed
-        try{
-            dbc.delete_expired(id);
-        }
-        catch (TicketDeletionException TDe){
-            System.out.println("Error deleting tickets: " + TDe.getMessage());
-        }
-    }//GEN-LAST:event_DeleteExpiredTicketsActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BuyTicketButton;
-    private javax.swing.JButton DeleteExpiredTickets;
     private javax.swing.JButton SeeTicketsButton;
     private javax.swing.JButton SignOutButton;
+    private javax.swing.JLabel UserMenuWelcomeMessage;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuItem jMenuItem1;

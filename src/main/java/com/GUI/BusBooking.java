@@ -21,19 +21,28 @@ public class BusBooking extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(BusBooking.class.getName());
     private final DatabaseController dbc;
+    private final String user_type;
     private final String id;
     private final String username;
     /**
      * Creates new form BusBooking
      */
     
-    public BusBooking(DatabaseController dbc, String id, String username) {
+    public BusBooking(DatabaseController dbc, String user_type, String id, String username) {
         initComponents();
         setTicketType();
-
+        // ADD DB CONTROLLER
         this.dbc = dbc;
+        
+        // SET USER INFO
+        this.user_type = user_type;
         this.id = id;
         this.username = username;
+        
+        // HIDE DISCOUNT FOR STUDENTS
+        if (user_type.equals("Student")){
+            DiscountLabel.setVisible(false);  
+        }
         
         // CLOSE BUTTON
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -47,6 +56,9 @@ public class BusBooking extends javax.swing.JFrame {
                 System.exit(0);
             }
         });
+        
+
+        
     }
 
     private void setDirandDp(){
@@ -75,6 +87,8 @@ public class BusBooking extends javax.swing.JFrame {
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -90,6 +104,11 @@ public class BusBooking extends javax.swing.JFrame {
         SubmitButton = new javax.swing.JButton();
         BackButton = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
+        DiscountLabel = new javax.swing.JLabel();
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane1.setViewportView(jTextArea1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -177,6 +196,11 @@ public class BusBooking extends javax.swing.JFrame {
         jLabel6.setToolTipText("");
         jLabel6.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
+        DiscountLabel.setFont(new java.awt.Font("Liberation Sans", 1, 18)); // NOI18N
+        DiscountLabel.setForeground(new java.awt.Color(51, 51, 255));
+        DiscountLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        DiscountLabel.setText("Professors enjoy 50% off of all purchased tickets!");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -190,6 +214,9 @@ public class BusBooking extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 96, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(226, 226, 226))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -212,18 +239,21 @@ public class BusBooking extends javax.swing.JFrame {
                                                 .addComponent(WeeklyButton, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(OneWayButton, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(DirectionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(308, 308, 308))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(226, 226, 226))))))
+                                    .addComponent(DirectionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(308, 308, 308))))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(DiscountLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 443, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(22, 22, 22)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(79, 79, 79)
+                .addGap(18, 18, 18)
+                .addComponent(DiscountLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(DestinationComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -371,7 +401,7 @@ public class BusBooking extends javax.swing.JFrame {
     private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed
         // TODO add your handling code here:
         this.dispose();
-        UserMenu m = new UserMenu(dbc, id, username);
+        UserMenu m = new UserMenu(dbc, user_type, id, username);
         m.setVisible(true);
         m.setLocationRelativeTo(null);
     }//GEN-LAST:event_BackButtonActionPerformed
@@ -386,6 +416,7 @@ public class BusBooking extends javax.swing.JFrame {
     private javax.swing.JRadioButton DailyButton;
     private javax.swing.JComboBox<String> DestinationComboBox;
     private javax.swing.JComboBox<String> DirectionComboBox;
+    private javax.swing.JLabel DiscountLabel;
     private javax.swing.JRadioButton OneWayButton;
     private javax.swing.JButton SubmitButton;
     private javax.swing.JRadioButton WeeklyButton;
@@ -398,5 +429,7 @@ public class BusBooking extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
 }
