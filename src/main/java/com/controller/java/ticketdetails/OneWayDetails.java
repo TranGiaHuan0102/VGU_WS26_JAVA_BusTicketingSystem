@@ -31,9 +31,9 @@ public class OneWayDetails extends TicketDetails{
     public final List<String> returnTicketDetail(){
         List<String> ticket_detail = new ArrayList<>();
         ticket_detail.add(getID());
-        ticket_detail.add(getType());
         ticket_detail.add(getStringStartDate());
         ticket_detail.add(getFormattedPrice());
+        ticket_detail.add(getLocation());
         ticket_detail.add(getStringTime());
         ticket_detail.add(getDirection());
         return ticket_detail;

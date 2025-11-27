@@ -126,7 +126,7 @@ public class CRUD_Tickets {
                        + "FROM public.oneway OW "
                        + "JOIN public.ticket_information TI ON (OW.ticket_type = TI.ticket_type AND OW.location_name = TI.location_name) "
                        + "WHERE OW.id = ? "
-                       + "ORDER BY OW.departure_date DESC, OW.direction DESC";
+                       + "ORDER BY OW.departure_date ASC, OW.direction DESC";
     
     // Query long-term tickets
     try (PreparedStatement stmt = conn.prepareStatement(longterm_Stmt)){
