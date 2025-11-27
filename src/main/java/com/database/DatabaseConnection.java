@@ -4,13 +4,13 @@ import java.sql.DriverManager;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import java.util.Map;
 import java.util.List;
 
 import com.database.CRUD.*;
 import com.exceptions.*;
 
 import com.controller.java.tickets.Ticket;
-import com.controller.java.ticketdetails.TicketDetails;
 import com.controller.java.users.User;
 
 
@@ -56,7 +56,7 @@ public class DatabaseConnection {
     }
     
     // Search tickets of ID
-    public List<TicketDetails> search(String id) throws TicketSelectionException{
+    public Map<String, List> search(String id) throws TicketSelectionException{
         return CRUD_Tickets.search_tickets(conn, id);
     }
     

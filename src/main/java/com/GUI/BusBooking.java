@@ -48,19 +48,19 @@ public class BusBooking extends javax.swing.JFrame {
         });
     }
 
-    private void setDirandDp(boolean enabled){
-        DirectionComboBox.setEnabled(enabled);
-        jDateChooser1.setEnabled(enabled);
+    private void setDirandDp(){
+        DirectionComboBox.setEnabled(true);
+        jDateChooser1.setEnabled(true);
     }
-    private void setDpnotDir(boolean enabled){
+    private void setDpnotDir(){
         DirectionComboBox.setEnabled(false);
-        jDateChooser1.setEnabled(enabled);  
+        jDateChooser1.setEnabled(true);  
     }
     
     private void setTicketType(){
-        DailyButton.addActionListener(e -> setDirandDp(false));
-        WeeklyButton.addActionListener(e -> setDpnotDir(true));
-        OneWayButton.addActionListener(e -> setDirandDp(true)); 
+        DailyButton.addActionListener(e -> setDpnotDir());
+        WeeklyButton.addActionListener(e -> setDpnotDir());
+        OneWayButton.addActionListener(e -> setDirandDp()); 
     }
     
     
@@ -100,7 +100,7 @@ public class BusBooking extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("BUS TICKET BOOKING");
+        jLabel1.setText("BUY TICKET");
         jLabel1.setToolTipText("");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -118,7 +118,7 @@ public class BusBooking extends javax.swing.JFrame {
         );
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel2.setText("Destination:");
+        jLabel2.setText("Target Station:");
 
         DestinationComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Destination", "Turtle Lake", "Hang Xanh", "Binh Trieu", "Binh Phuoc Crossroads", "Binh Duong Aeon Mall", "Becamex Tower" }));
         DestinationComboBox.setToolTipText("");
@@ -143,7 +143,7 @@ public class BusBooking extends javax.swing.JFrame {
         OneWayButton.addActionListener(this::OneWayButtonActionPerformed);
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel4.setText("Departure:");
+        jLabel4.setText("Go Date:");
 
         jDateChooser1.addAncestorListener(new javax.swing.event.AncestorListener() {
             public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
@@ -300,7 +300,7 @@ public class BusBooking extends javax.swing.JFrame {
         LocalDate selectedDate = jDateChooser1.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         LocalDate threeDaysLater = LocalDate.now().plusDays(3);
         
-        if (selectedDate.isBefore(threeDaysLater)){
+        if (OneWayButton.isSelected() && selectedDate.isBefore(threeDaysLater)){
             return 5;
         }
         return 0;
@@ -313,7 +313,7 @@ public class BusBooking extends javax.swing.JFrame {
         
         switch (submission_status){
             case 1:
-                jLabel6.setText("Please select a destination!");
+                jLabel6.setText("Please select a target station !");
                 return;
             case 2:
                 jLabel6.setText("Please select a ticket type!");
@@ -355,8 +355,7 @@ public class BusBooking extends javax.swing.JFrame {
             jLabel6.setText("Submitted!");
         }
         catch(TicketInsertionException TIe){
-            jLabel6.setText("Unable to book more tickets on this date!");
-            System.out.println(TIe.getMessage());
+            jLabel6.setText(TIe.getMessage());
         }
     }//GEN-LAST:event_SubmitButtonActionPerformed
 

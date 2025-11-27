@@ -5,6 +5,7 @@ package com.controller.java.ticketdetails;
  * @author tokuden
  */
 import java.time.LocalDate;
+import java.util.List;
 
 public abstract class TicketDetails {
     private final String id;
@@ -23,10 +24,11 @@ public abstract class TicketDetails {
     // Getters
     protected final String getID() {return this.id;}
     protected final LocalDate getStartDate() {return this.start_date;}
+    protected final String getStringStartDate() {return this.start_date.toString();}
     protected final String getLocation() {return this.location;}
     
     // Print ticket
-    public abstract String printTicket();
+    public abstract List<String> returnTicketDetail();
     
     // Helper method for price formatting
     protected String getFormattedPrice(){
