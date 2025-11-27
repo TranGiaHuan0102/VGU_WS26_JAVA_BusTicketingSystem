@@ -13,6 +13,8 @@ public class MainMenu extends javax.swing.JFrame {
     /**
      * Creates new form MainMenu
      */
+    
+    // This gets called when app first boots up
     public MainMenu()  {
         initComponents();
         
@@ -27,20 +29,41 @@ public class MainMenu extends javax.swing.JFrame {
             System.exit(0);
         }
         
-        // CLOSE BUTTON
-//        addWindowListener(new java.awt.event.WindowAdapter() {
-//            @Override
-//            public void windowClosing(java.awt.event.WindowEvent windowEvent){
-//                // Close database controller (if open)
-//                if (dbc != null){
-//                    dbc.close();
-//                }
-//                dispose();
-//                System.exit(0);
-//            }
-//        });
+        //CLOSE BUTTON
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent){
+                // Close database controller (if open)
+                if (dbc != null){
+                    dbc.close();
+                }
+                dispose();
+                System.exit(0);
+            }
+        });
     }
 
+    // This gets called when the back button is hit
+    public MainMenu(DatabaseController dbc){
+        initComponents();
+        
+        // ADD DB CONTROLER
+        this.dbc = dbc;
+        
+        // CLOSE BUTTON
+        //CLOSE BUTTON
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent){
+                // Close database controller (if open)
+                if (dbc != null){
+                    dbc.close();
+                }
+                dispose();
+                System.exit(0);
+            }
+        });
+    }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -48,6 +71,7 @@ public class MainMenu extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         MainMenuLabel = new javax.swing.JLabel();
         StudentLoginButton = new javax.swing.JButton();
+        ProfessorLogInButton = new javax.swing.JButton();
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -62,37 +86,44 @@ public class MainMenu extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        MainMenuLabel.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        MainMenuLabel.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         MainMenuLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        MainMenuLabel.setText("Bus App");
+        MainMenuLabel.setText("BUS APP");
         MainMenuLabel.setToolTipText("");
 
-        StudentLoginButton.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        StudentLoginButton.setFont(new java.awt.Font("SansSerif", 1, 18)); // NOI18N
         StudentLoginButton.setText("Log In as Student");
         StudentLoginButton.addActionListener(this::StudentLoginButtonActionPerformed);
+
+        ProfessorLogInButton.setFont(new java.awt.Font("SansSerif", 1, 18)); // NOI18N
+        ProfessorLogInButton.setText("Log In as Professor");
+        ProfessorLogInButton.addActionListener(this::ProfessorLogInButtonActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(271, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(MainMenuLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(278, 278, 278))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(StudentLoginButton)
-                        .addGap(268, 268, 268))))
+                .addGap(141, 141, 141)
+                .addComponent(StudentLoginButton)
+                .addGap(70, 70, 70)
+                .addComponent(ProfessorLogInButton)
+                .addGap(0, 119, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(MainMenuLabel)
+                .addGap(281, 281, 281))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(82, 82, 82)
-                .addComponent(MainMenuLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 111, Short.MAX_VALUE)
-                .addComponent(StudentLoginButton)
-                .addGap(99, 99, 99))
+                .addContainerGap(108, Short.MAX_VALUE)
+                .addComponent(MainMenuLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(55, 55, 55)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(StudentLoginButton)
+                    .addComponent(ProfessorLogInButton))
+                .addGap(126, 126, 126))
         );
 
         pack();
@@ -102,15 +133,23 @@ public class MainMenu extends javax.swing.JFrame {
     private void StudentLoginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StudentLoginButtonActionPerformed
         // TODO add your handling code here:
         dispose();
-        UserLogin ul = new UserLogin(dbc);
+        UserLogin ul = new UserLogin(dbc, "Student");
         ul.setVisible(true);
         ul.setLocationRelativeTo(null);
     }//GEN-LAST:event_StudentLoginButtonActionPerformed
+
+    private void ProfessorLogInButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ProfessorLogInButtonActionPerformed
+        this.dispose();
+        UserLogin ul = new UserLogin(dbc, "Professor");
+        ul.setVisible(true);
+        ul.setLocationRelativeTo(null);
+    }//GEN-LAST:event_ProfessorLogInButtonActionPerformed
 
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel MainMenuLabel;
+    private javax.swing.JButton ProfessorLogInButton;
     private javax.swing.JButton StudentLoginButton;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables

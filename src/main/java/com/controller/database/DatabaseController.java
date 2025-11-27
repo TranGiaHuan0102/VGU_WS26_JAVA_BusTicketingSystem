@@ -22,11 +22,12 @@ public class DatabaseController {
         db.close();
     }
     
-    // Insert
+    // Insert ticket
     public void insert(Ticket t) throws TicketInsertionException{
         db.insert(t);
     }
     
+    // Insert user
     public void insert(User u) throws NewUserException{
         db.insert(u);
     }
