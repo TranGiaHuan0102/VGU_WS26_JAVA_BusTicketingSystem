@@ -1,12 +1,11 @@
 package com.controller.database;
 
-
+import java.util.Map;
 import java.util.List;
 
 import com.database.DatabaseConnection;
 import com.exceptions.*;
 import com.controller.java.tickets.Ticket;
-import com.controller.java.ticketdetails.TicketDetails;
 import com.controller.java.users.User;
 
 
@@ -33,7 +32,7 @@ public class DatabaseController {
     }
     
     // Search ticket with ID
-    public List<TicketDetails> search(String id) throws TicketSelectionException{
+    public Map<String, List> search(String id) throws TicketSelectionException{
         return db.search(id);
     }
     

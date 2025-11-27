@@ -7,22 +7,26 @@ package com.GUI;
  *
  * @author caoda
  */
-import com.exceptions.TicketSelectionException;
-import com.exceptions.TicketDeletionException;
+import javax.swing.BoxLayout;
+import javax.swing.BorderFactory;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JPanel;
+import javax.swing.JTable;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+
+import java.lang.StringBuilder;
+import java.util.Map;
 import java.util.List;
 
 import com.controller.database.DatabaseController;
-import com.exceptions.*;
 import com.controller.java.ticketdetails.TicketDetails;
-
-import javax.swing.JOptionPane;
-import javax.swing.JDialog;
-import javax.swing.JTextArea;
-import javax.swing.JScrollPane;
-import java.awt.Font;
-import java.awt.Insets;
-
-import java.lang.StringBuilder;
+import com.exceptions.TicketSelectionException;
+import com.exceptions.TicketDeletionException;
 
 public class UserMenu extends javax.swing.JFrame {
     
@@ -159,50 +163,58 @@ public class UserMenu extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    // Helper function of MyTicket
-    private String AllTicketsString(List<TicketDetails> ticket_details){
-        // Build string for all tickets
-        StringBuilder allTickets = new StringBuilder();
-        
-        for (int i = 0; i < ticket_details.size(); i++){
-            allTickets.append("==========TICKET #").append(i + 1).append("===============").append("\n");
-            allTickets.append(ticket_details.get(i).printTicket());
 
-            if (i < ticket_details.size() - 1){
-                allTickets.append("=================================\n\n");
-            }
-        }
-        
-        return allTickets.toString();
-    }
-    
     // My Ticket Button
     private void SeeTicketsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SeeTicketsButtonActionPerformed
         try{
-            List<TicketDetails> ticket_details = dbc.search(id);
+            // List containing ticket details of both ticket types (long-term and oneway)
+            Map<String, List> ticket_details = dbc.search(id);
             
-            if (ticket_details.isEmpty()){
-                JOptionPane.showMessageDialog(this, "No tickets found!", "My Tickets", JOptionPane.INFORMATION_MESSAGE);
+            // Separate them 
+            List<TicketDetails> longterm_details = ticket_details.get("LONGTERM");
+            List<TicketDetails> oneway_details = ticket_details.get("ONEWAY");
+            
+            // Null check
+            if (longterm_details.isEmpty() && oneway_details.isEmpty()){
+                JOptionPane.showMessageDialog(this, "No tickets found!", username + "'s Ticket", JOptionPane.INFORMATION_MESSAGE);
                 return;
             }
             
-            // Create a simple dialog
-            JDialog ticketDialog = new JDialog(this, "My Ticket", true);
-            ticketDialog.setSize(500, 600);
+            // Create dialog
+            JDialog ticketDialog = new JDialog(this, username + "'s Ticket", true);
+            ticketDialog.setSize(1000, 1200);
             ticketDialog.setLocationRelativeTo(this);
 
-            JTextArea textArea = new JTextArea();
-            textArea.setEditable(false);
-            textArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
-            textArea.setMargin(new Insets(10, 10, 10, 10));
+            // Create panel to hold both tables
+            JPanel mainPanel = new JPanel();
+            mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
             
-            // Show all tickets
-            textArea.setText(AllTicketsString(ticket_details));
+            // Long-term tickets table
+            if  (!longterm_details.isEmpty()){
+                JLabel longtermLabel = new JLabel("Long-Term Tickets");
+                longtermLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 5, 10));
+                
+                JTable longtermTable = createLongTermTable(longterm_details);
+                JScrollPane longtermScroll = new JScrollPane(longtermTable);
+                
+                mainPanel.add(longtermLabel);
+                mainPanel.add(longtermScroll);
+            }
             
-            // Add to dialog with scroll pane
-            JScrollPane scrollPane = new JScrollPane(textArea);
-            ticketDialog.add(scrollPane);
+            // One way tickets table
+            if (!oneway_details.isEmpty()){
+                JLabel onewayLabel = new JLabel("One Way Tickets");
+                onewayLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 5, 10));
+                
+                JTable onewayTable = createOneWayTable(oneway_details);
+                JScrollPane onewayScroll = new JScrollPane(onewayTable);
+                onewayScroll.setPreferredSize(new Dimension(650, 200));
+                
+                mainPanel.add(onewayLabel);
+                mainPanel.add(onewayScroll);
+            }
             
+            ticketDialog.add(mainPanel, BorderLayout.CENTER);
             ticketDialog.setVisible(true);
         }
         catch(TicketSelectionException TSe){
@@ -210,6 +222,55 @@ public class UserMenu extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_SeeTicketsButtonActionPerformed
 
+    // Helper to create LongTerm table
+    private JTable createLongTermTable(List<TicketDetails> longterm_details){
+        // Define column names
+        String[] column_names = {"Student ID", "Type", "Active Date", "Expiry Date", "Price", "Morning Pick-up", "Afternoon Pick-up", "Expiry Status"};
+        
+        // Create data array
+        Object[][] data = new Object[longterm_details.size()][column_names.length];
+        
+        // Fill data
+        for (int i = 0; i < longterm_details.size(); i++){
+            List ticket_detail = longterm_details.get(i).returnTicketDetail();
+            
+            // Convert TicketDetail to array row
+            for (int j = 0; j < ticket_detail.size(); j++){
+                data[i][j] = ticket_detail.get(j);
+            }
+        }
+        
+        JTable table = new JTable(data, column_names);
+        table.setFillsViewportHeight(true);
+        table.setEnabled(false); // Read-only table
+        
+        return table;
+    }
+    
+    // Helper to create OneWay Table
+    private JTable createOneWayTable(List<TicketDetails> oneway_details){
+        // Define column names
+        String[] column_names = {"Student ID", "Type", "Departure Date", "Price", "Pick-up Time", "Direction"};
+        
+        // Create data array
+        Object[][] data = new Object[oneway_details.size()][column_names.length];
+        
+        // Fill data
+        for (int i = 0; i < oneway_details.size(); i++){
+            List ticket_detail = oneway_details.get(i).returnTicketDetail();
+            
+            // Convert TicketDetail to array row
+            for (int j = 0; j < ticket_detail.size(); j++){
+                data[i][j] = ticket_detail.get(j);
+            }
+        }
+        
+        JTable table = new JTable(data, column_names);
+        table.setFillsViewportHeight(true);
+        table.setEnabled(false); // Read-only table
+        return table;
+    }
+    
     // Buy Ticket Button
     private void BuyTicketButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BuyTicketButtonActionPerformed
         this.dispose();

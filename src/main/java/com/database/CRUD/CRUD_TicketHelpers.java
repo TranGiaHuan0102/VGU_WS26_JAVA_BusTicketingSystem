@@ -11,7 +11,7 @@ public class CRUD_TicketHelpers {
         // Can only re-register if current daily/weekly ticket expires
         boolean eligible = true;
 
-        String selectStmt = "SELECT end_date FROM weekly_daily WHERE id = ? ORDER BY end_date DESC LIMIT 1";
+        String selectStmt = "SELECT end_date FROM longterm WHERE id = ? ORDER BY end_date DESC LIMIT 1";
         try (PreparedStatement stmt = conn.prepareStatement(selectStmt)){
             stmt.setString(1, id);
 
@@ -25,10 +25,8 @@ public class CRUD_TicketHelpers {
 
         }
         catch(SQLException sqle){
-            System.out.println("Check failed: " + sqle.getMessage());
-            sqle.printStackTrace();
             eligible = false; // default to not eligible on error
-            }
+         }
         return eligible;
     }
 }
