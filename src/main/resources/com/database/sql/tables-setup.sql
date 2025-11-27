@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS public.user
     email character varying(256) COLLATE pg_catalog."default" NOT NULL,
     user_type character varying(10) COLLATE pg_catalog."default" NOT NULL,
     CONSTRAINT id_pk PRIMARY KEY (id),
-    CONSTRAINT user_type_check CHECK (user_type::text = ANY (ARRAY['STUDENT'::character varying::text, 'INSTRUCTOR'::character varying::text, 'GUEST'::character varying::text]))
+    CONSTRAINT user_type_check CHECK (user_type::text = ANY (ARRAY['STUDENT'::character varying::text, 'PROFESSOR'::character varying::text, 'GUEST'::character varying::text]))
 )
 
 TABLESPACE pg_default;

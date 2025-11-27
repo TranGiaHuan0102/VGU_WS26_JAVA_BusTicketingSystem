@@ -8,8 +8,8 @@ package com.GUI;
  *
  * @author caoda
  */
-import com.controller.java.users.Student;
-import com.controller.java.users.User;
+
+import com.controller.java.users.*;
 import com.controller.database.DatabaseController;
 import com.exceptions.*;
 import java.awt.Color;
@@ -18,12 +18,18 @@ public class NewUser extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(NewUser.class.getName());
     private DatabaseController dbc;
+    private final String user_type;
     /**
      * Creates new form NewUser
      */
-    public NewUser(DatabaseController dbc) {
+    public NewUser(DatabaseController dbc, String user_type) {
         initComponents();
+        // ADD DB CONTROLLER
         this.dbc = dbc;
+        
+        // UPDATE TITLE CARD ACCORDING TO USER_TYPE
+        this.user_type = user_type;
+        RegisterTitle.setText("Register as " + this.user_type);
         
         // CLOSE BUTTON
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -50,7 +56,7 @@ public class NewUser extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         FNameField = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
+        RegisterTitle = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         LNameField = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
@@ -70,29 +76,23 @@ public class NewUser extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel1.setText("First Name: ");
 
-        FNameField.addActionListener(this::FNameFieldActionPerformed);
-
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("Register as New Student");
+        RegisterTitle.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        RegisterTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        RegisterTitle.setText("Register as ");
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel3.setText("Last Name:");
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
-        IDField.addActionListener(this::IDFieldActionPerformed);
-
         jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel5.setText("Student ID:");
+        jLabel5.setText("ID:");
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel6.setText("Password:");
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel7.setText("Email:");
-
-        EmailField.addActionListener(this::EmailFieldActionPerformed);
 
         RegisterButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         RegisterButton.setText("Register");
@@ -113,6 +113,10 @@ public class NewUser extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(Message1, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(233, 233, 233))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -144,24 +148,18 @@ public class NewUser extends javax.swing.JFrame {
                             .addComponent(SignInButton)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(375, 375, 375)
-                        .addComponent(ErrorMg, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(ErrorMg, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(270, 270, 270)
+                        .addComponent(RegisterTitle)))
                 .addContainerGap(89, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(265, 265, 265))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(Message1, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(233, 233, 233))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addComponent(jLabel2)
-                .addGap(49, 49, 49)
+                .addGap(27, 27, 27)
+                .addComponent(RegisterTitle)
+                .addGap(45, 45, 45)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(FNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -186,23 +184,11 @@ public class NewUser extends javax.swing.JFrame {
                 .addComponent(Message1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(ErrorMg)
-                .addContainerGap(60, Short.MAX_VALUE))
+                .addContainerGap(47, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void FNameFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FNameFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_FNameFieldActionPerformed
-
-    private void IDFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_IDFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_IDFieldActionPerformed
-
-    private void EmailFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EmailFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_EmailFieldActionPerformed
     
     
     private void RegisterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegisterButtonActionPerformed
@@ -245,10 +231,17 @@ public class NewUser extends javax.swing.JFrame {
             return;
         }
         
-        // Create a student object
-        User u = new Student(fname, lname, email, password, id);
+        // Create a user object based on user_type
+        User u;
+        if (user_type.equals("Student")){
+            u = new Student(fname, lname, email, password, id);
+        }
+        else{
+            u = new Professor(fname, lname, email, password, id); 
+        }
+        
         try{
-            dbc.insert(u);  /* Add student to db */
+            dbc.insert(u);  /* Add User to db */
             ErrorMg.setText("User with ID " + id + " successfully created!");
             ErrorMg.setForeground(Color.GREEN);
         }
@@ -262,7 +255,7 @@ public class NewUser extends javax.swing.JFrame {
     private void SignInButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignInButtonActionPerformed
         // TODO add your handling code here:
         dispose();
-        UserLogin ul = new UserLogin(dbc);
+        UserLogin ul = new UserLogin(dbc, user_type);
         ul.setVisible(true);
         ul.setLocationRelativeTo(null);
     }//GEN-LAST:event_SignInButtonActionPerformed
@@ -276,9 +269,9 @@ public class NewUser extends javax.swing.JFrame {
     private javax.swing.JTextField LNameField;
     private javax.swing.JLabel Message1;
     private javax.swing.JButton RegisterButton;
+    private javax.swing.JLabel RegisterTitle;
     private javax.swing.JButton SignInButton;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
