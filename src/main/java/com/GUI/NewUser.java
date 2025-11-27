@@ -12,6 +12,7 @@ import com.controller.java.users.Student;
 import com.controller.java.users.User;
 import com.controller.database.DatabaseController;
 import com.exceptions.*;
+import java.awt.Color;
 
 public class NewUser extends javax.swing.JFrame {
     
@@ -62,6 +63,7 @@ public class NewUser extends javax.swing.JFrame {
         RegisterButton = new javax.swing.JButton();
         SignInButton = new javax.swing.JButton();
         ErrorMg = new javax.swing.JLabel();
+        Message1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -104,6 +106,9 @@ public class NewUser extends javax.swing.JFrame {
         ErrorMg.setForeground(new java.awt.Color(255, 51, 0));
         ErrorMg.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
+        Message1.setForeground(new java.awt.Color(0, 255, 0));
+        Message1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -138,13 +143,18 @@ public class NewUser extends javax.swing.JFrame {
                                 .addComponent(jPasswordField1))
                             .addComponent(SignInButton)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(306, 306, 306)
+                        .addGap(375, 375, 375)
                         .addComponent(ErrorMg, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(89, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jLabel2)
-                .addGap(265, 265, 265))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(265, 265, 265))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(Message1, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(233, 233, 233))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -172,9 +182,11 @@ public class NewUser extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(RegisterButton)
                     .addComponent(SignInButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(Message1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(ErrorMg)
-                .addContainerGap(49, Short.MAX_VALUE))
+                .addContainerGap(60, Short.MAX_VALUE))
         );
 
         pack();
@@ -238,9 +250,11 @@ public class NewUser extends javax.swing.JFrame {
         try{
             dbc.insert(u);  /* Add student to db */
             ErrorMg.setText("User with ID " + id + " successfully created!");
+            ErrorMg.setForeground(Color.GREEN);
         }
         catch(NewUserException NUe){
             ErrorMg.setText("User with ID " + id + " already existed!");
+            ErrorMg.setForeground(Color.RED);
             System.out.print(NUe.getMessage());
         }
     }//GEN-LAST:event_RegisterButtonActionPerformed
@@ -260,6 +274,7 @@ public class NewUser extends javax.swing.JFrame {
     private javax.swing.JTextField FNameField;
     private javax.swing.JTextField IDField;
     private javax.swing.JTextField LNameField;
+    private javax.swing.JLabel Message1;
     private javax.swing.JButton RegisterButton;
     private javax.swing.JButton SignInButton;
     private javax.swing.JLabel jLabel1;

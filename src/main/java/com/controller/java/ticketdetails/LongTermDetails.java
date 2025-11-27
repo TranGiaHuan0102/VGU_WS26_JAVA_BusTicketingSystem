@@ -45,6 +45,7 @@ public class LongTermDetails extends TicketDetails{
         ticket_detail.add(getType());
         ticket_detail.add(getStringStartDate());
         ticket_detail.add(getStringExpiryDate());
+        ticket_detail.add(getLocation());
         ticket_detail.add(getFormattedPrice());
         ticket_detail.add(getStringMorningTime());
         ticket_detail.add(getStringAfternoonTime());
