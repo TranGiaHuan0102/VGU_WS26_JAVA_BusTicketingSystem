@@ -227,7 +227,7 @@ public class UserMenu extends javax.swing.JFrame {
     // Helper to create LongTerm table
     private JTable createLongTermTable(List<TicketDetails> longterm_details){
         // Define column names
-        String[] column_names = {"ID", "Type", "Active Date", "Expiry Date", "Bus Stop", "Price", "Morning Pick-up", "Afternoon Pick-up", "Expiry Status"};
+        String[] column_names = {"ID", "Type", "Price", "Bus Stop", "Morning Pick-up", "Afternoon Pick-up", "Active Date", "Expiry Date", "Expiry Status"};
         
         // Create data array
         Object[][] data = new Object[longterm_details.size()][column_names.length];
@@ -252,7 +252,7 @@ public class UserMenu extends javax.swing.JFrame {
     // Helper to create OneWay Table
     private JTable createOneWayTable(List<TicketDetails> oneway_details){
         // Define column names
-        String[] column_names = {"ID", "Departure Date", "Bus Stop", "Price", "Pick-up Time", "Direction"};
+        String[] column_names = {"ID", "Type", "Price", "Direction", "Departure Date", "Departure Time"};
         
         // Create data array
         Object[][] data = new Object[oneway_details.size()][column_names.length];

@@ -1,11 +1,14 @@
 -- To run this setup file, use: psql -U postgres -d BusTicketManagementSystem -f tables-setup.sql
 
 -- Uncomment if need fresh db (this will wipe existing data)
--- DROP TABLE IF EXISTS public.oneway;
--- DROP TABLE IF EXISTS public.longterm;
--- DROP TABLE IF EXISTS public.ticket_information;
--- DROP TABLE IF EXISTS public.locations;
--- DROP TABLE IF EXISTS public.user;
+-- DROP TABLE IF EXISTS public.oneway CASCADE;
+-- DROP TABLE IF EXISTS public.longterm CASCADE;
+-- DROP TABLE IF EXISTS public.ticket_information CASCADE;
+-- DROP TABLE IF EXISTS public.ticket_types CASCADE;
+-- DROP TABLE IF EXISTS public.locations CASCADE;
+-- DROP TABLE IF EXISTS public.user_types CASCADE;
+-- DROP TABLE IF EXISTS public.user CASCADE;
+-- DROP TYPE IF EXISTS direction_type CASCADE;
 
 -- Table: public.locations
 
@@ -14,7 +17,6 @@ CREATE TABLE IF NOT EXISTS public.locations
     location_name character varying(256) COLLATE pg_catalog."default" NOT NULL,
     CONSTRAINT locations_pkey PRIMARY KEY (location_name)
 )
-
 TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.locations
@@ -28,6 +30,25 @@ Binh Trieu
 Binh Phuoc Crossroads
 Binh Duong Aeon Mall
 Becamex Tower
+\.
+
+-- Table: public.ticket_types
+
+CREATE TABLE IF NOT EXISTS public.ticket_types
+(
+    ticket_type character varying (10) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT ticket_types_pkey PRIMARY KEY (ticket_type)
+)
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.ticket_types
+    OWNER to postgres;
+
+-- Seed ticket types data
+COPY public.ticket_types (ticket_type) FROM STDIN WITH (FORMAT CSV);
+WEEKLY
+DAILY
+ONEWAY
 \.
 
 -- Table: public.ticket_information
@@ -44,9 +65,11 @@ CREATE TABLE IF NOT EXISTS public.ticket_information
         REFERENCES public.locations (location_name) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE CASCADE,
-    CONSTRAINT ticket_type_chk CHECK (ticket_type::text = 'WEEKLY'::text OR ticket_type::text = 'DAILY' OR ticket_type::text = 'ONEWAY'::text)
+    CONSTRAINT ticket_type_fk FOREIGN KEY (ticket_type)
+        REFERENCES public.ticket_types (ticket_type) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
 )
-
 TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.ticket_information
@@ -74,33 +97,77 @@ Becamex Tower,DAILY,3600000,07:50:00,16:30:00
 Becamex Tower,ONEWAY,150000,07:50:00,16:30:00
 \.
 
+-- Table: public.user_types
+
+CREATE TABLE IF NOT EXISTS public.user_types(
+    user_type character varying (10) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT user_types_pkey PRIMARY KEY (user_type)
+)
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.user_types
+    OWNER to postgres;
+
+
+-- Seed user types data
+COPY public.user_types (user_type) FROM STDIN WITH (FORMAT CSV);
+STUDENT
+PROFESSOR
+\.
+
+
 -- Table: public.user
 
 CREATE TABLE IF NOT EXISTS public.user
 (
-    id character varying(8) COLLATE pg_catalog."default" NOT NULL,
+    id character varying(8) COLLATE pg_catalog."default",
     first_name character varying(256) COLLATE pg_catalog."default" NOT NULL,
     last_name character varying(256) COLLATE pg_catalog."default" NOT NULL,
     password character varying(256) COLLATE pg_catalog."default" NOT NULL,
     email character varying(256) COLLATE pg_catalog."default" NOT NULL,
     user_type character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    user_price_multiplier NUMERIC(3,2) DEFAULT 1.0,
     CONSTRAINT id_pk PRIMARY KEY (id),
-    CONSTRAINT user_type_check CHECK (user_type::text = ANY (ARRAY['STUDENT'::character varying::text, 'PROFESSOR'::character varying::text, 'GUEST'::character varying::text]))
+    CONSTRAINT user_type_fk FOREIGN KEY (user_type)
+        REFERENCES public.user_types (user_type) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE RESTRICT
 )
-
 TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.user
     OWNER to postgres;
 
+-- Function to automatically set multiplier
+CREATE OR REPLACE FUNCTION set_price_multiplier()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.user_price_multiplier := CASE
+        WHEN NEW.user_type = 'PROFESSOR' THEN 0.5
+        ELSE 1.0
+    END;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Trigger for price multiplier
+CREATE TRIGGER trigger_set_price_multiplier
+    BEFORE INSERT OR UPDATE OF user_type ON public.user
+    FOR EACH ROW
+    EXECUTE FUNCTION set_price_multiplier();
+
+
+
 -- Table: public.longterm
+
 CREATE TABLE IF NOT EXISTS public.longterm
 (
-    id character varying(8) COLLATE pg_catalog."default" NOT NULL,
-    start_date date NOT NULL,
+    id character varying(8) COLLATE pg_catalog."default",
+    start_date date,
     end_date date NOT NULL,
     ticket_type character varying(10) COLLATE pg_catalog."default" NOT NULL,
     location_name character varying(256) COLLATE pg_catalog."default" NOT NULL,
+    actual_price BIGINT NOT NULL DEFAULT 0,
     CONSTRAINT longterm_pk PRIMARY KEY (id, start_date),
     CONSTRAINT id_fk FOREIGN KEY (id)
         REFERENCES public.user (id) MATCH SIMPLE
@@ -111,7 +178,6 @@ CREATE TABLE IF NOT EXISTS public.longterm
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
-
 TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.longterm
@@ -119,13 +185,16 @@ ALTER TABLE IF EXISTS public.longterm
 
 -- Table: public.oneway
 
+CREATE TYPE direction_type AS ENUM ('TO', 'FROM');
+
 CREATE TABLE IF NOT EXISTS public.oneway
 (
-    id character varying(8) COLLATE pg_catalog."default" NOT NULL,
-    departure_date date NOT NULL,
-    location_name character varying(256) COLLATE pg_catalog."default",
-    ticket_type character varying(10) COLLATE pg_catalog."default" DEFAULT 'ONEWAY'::character varying,
-    direction character(1) COLLATE pg_catalog."default" NOT NULL,
+    id character varying(8) COLLATE pg_catalog."default",
+    departure_date date,
+    location_name character varying(256) COLLATE pg_catalog."default" NOT NULL,
+    ticket_type character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    direction direction_type NOT NULL,
+    actual_price BIGINT NOT NULL DEFAULT 0,
     CONSTRAINT oneway_pk PRIMARY KEY (id, departure_date, direction),
     CONSTRAINT id_fk FOREIGN KEY (id)
         REFERENCES public.user (id) MATCH SIMPLE
@@ -134,12 +203,38 @@ CREATE TABLE IF NOT EXISTS public.oneway
     CONSTRAINT ticket_info_fk FOREIGN KEY (location_name, ticket_type)
         REFERENCES public.ticket_information (location_name, ticket_type) MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION,
-    CONSTRAINT oneway_direction_check CHECK (direction = ANY (ARRAY['T'::bpchar, 'F'::bpchar])),
-    CONSTRAINT oneway_ticket_type_check CHECK (ticket_type::text = 'ONEWAY'::text)
+        ON DELETE NO ACTION
 )
-
 TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.oneway
     OWNER to postgres;
+
+-- Function to calculate actual price based on location_price and user_price_multiplier
+CREATE OR REPLACE FUNCTION calculate_actual_price()
+RETURNS TRIGGER AS $$
+BEGIN 
+    SELECT (TI.price * U.user_price_multiplier)::BIGINT INTO NEW.actual_price
+    FROM public.user U 
+    JOIN public.ticket_information TI ON (TI.location_name = NEW.location_name AND TI.ticket_type = NEW.ticket_type)
+    WHERE U.id = NEW.id;
+
+    IF NEW.actual_price IS NULL THEN
+        NEW.actual_price := 0;  
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Trigger for longterm_actual_price
+CREATE TRIGGER trigger_actual_longterm_price
+    BEFORE INSERT ON public.longterm
+    FOR EACH ROW
+    EXECUTE FUNCTION calculate_actual_price();
+
+-- Trigger for oneway_actual_price
+CREATE TRIGGER trigger_actual_longterm_price
+    BEFORE INSERT ON public.oneway
+    FOR EACH ROW
+    EXECUTE FUNCTION calculate_actual_price();
