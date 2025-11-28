@@ -381,8 +381,12 @@ public class BusBooking extends javax.swing.JFrame {
             t = WeeklyTicket.create(id, start_date, location);
         }
         else{
-            String direction = (DirectionComboBox.getSelectedIndex() == 1) ? "T" : "F";    /* Determine direction*/
-            t = OneWayTicket.create(id, start_date, location, direction);
+            if (DirectionComboBox.getSelectedIndex() == 1){
+                t = OneWayTicket.create_FROM(id, start_date, location);
+            }
+            else{
+                t = OneWayTicket.create_TO(id, start_date, location);
+            }
         }
         
         

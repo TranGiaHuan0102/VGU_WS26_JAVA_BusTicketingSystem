@@ -3,11 +3,9 @@ package com.database.CRUD;
 
 import com.controller.java.tickets.Ticket;
 import com.controller.java.tickets.OneWayTicket;
-import com.controller.java.tickets.DailyTicket;
-import com.controller.java.tickets.WeeklyTicket;
-import com.controller.java.ticketdetails.TicketDetails;
-import com.controller.java.ticketdetails.LongTermDetails;
-import com.controller.java.ticketdetails.OneWayDetails;
+import com.controller.java.ticketdetails.*;
+import com.exceptions.*;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.ResultSet;
@@ -24,86 +22,56 @@ import java.time.LocalTime;
 
 
 
-import com.exceptions.*;
+
 
 
 
 public class CRUD_Tickets {    
     
 
-    // Overloading Insert
-    public static void insert_ticket(Connection conn, Ticket t) throws TicketInsertionException{
-        if (t instanceof WeeklyTicket){
-            insert_ticket(conn, (WeeklyTicket) t);
-        }
-        else if (t instanceof DailyTicket){
-            insert_ticket(conn, (DailyTicket) t);
-        }
-        else if (t instanceof OneWayTicket){
-            insert_ticket(conn, (OneWayTicket) t);
-        }
-    }
+    // Overloading Inserts:
     
-    private static void insert_ticket(Connection conn, WeeklyTicket wt) throws TicketInsertionException {
-    // Eligibility check
-    if (!CRUD_TicketHelpers.eligible(conn, wt.getID())){
-        throw new TicketInsertionException("User already has an active long-term ticket!");
-    }
+    // Default insert is for weekly and daily (longterm)
+    public static void insert_ticket(Connection conn, Ticket t) throws TicketInsertionException{        
+        // Eligibility check
+        if (!CRUD_TicketHelpers.eligible(conn, t.getID())){
+            throw new TicketInsertionException("User already has an active long-term ticket!");
+        }
         
-    String insertStmt = "INSERT INTO public.longterm(id, start_date, end_date, ticket_type, location_name) VALUES (?, ?, ?, ?, ?)";
-
-    try (PreparedStatement stmt = conn.prepareStatement(insertStmt)) {
-        stmt.setString(1, wt.getID());
-        stmt.setDate(2, Date.valueOf(wt.getStartDate()));
-        stmt.setDate(3, Date.valueOf(wt.getEndDate()));
-        stmt.setString(4, "WEEKLY");
-        stmt.setString(5, wt.getLocation());
-
-        stmt.executeUpdate();
-    } 
-    
-    catch (SQLException sqle) {
-        throw new TicketInsertionException();
-        }
-    }
-    
-    private static void insert_ticket(Connection conn, DailyTicket dt) throws TicketInsertionException{
-    // Eligibility check
-    if (!CRUD_TicketHelpers.eligible(conn, dt.getID())){
-        throw new TicketInsertionException("User already has an active long-term ticket!");
-    }
+        String insertStmt = "INSERT INTO public.longterm(id, start_date, end_date, ticket_type, location_name) VALUES (?, ?, ?, ?, ?)";
         
-    String insertStmt = "INSERT INTO public.longterm(id, start_date, end_date, ticket_type, location_name) VALUES (?, ?, ?, ?, ?);";
-    
-    try (PreparedStatement stmt = conn.prepareStatement(insertStmt)) {
-        stmt.setString(1, dt.getID());
-        stmt.setDate(2, Date.valueOf(dt.getStartDate()));
-        stmt.setDate(3, Date.valueOf(dt.getEndDate()));
-        stmt.setString(4, "DAILY");
-        stmt.setString(5, dt.getLocation());
+        try (PreparedStatement stmt = conn.prepareStatement(insertStmt)) {
+            stmt.setString(1, t.getID());
+            stmt.setDate(2, Date.valueOf(t.getStartDate()));
+            stmt.setDate(3, Date.valueOf(t.getExpiryDate()));
+            stmt.setString(4, t.getStringTicketType());
+            stmt.setString(5, t.getLocation());
 
-        stmt.executeUpdate();
-    }
-    catch (SQLException sqle) {
-        throw new TicketInsertionException();
+            stmt.executeUpdate();
+        }
+        catch (SQLException sqle) {
+            System.out.println(sqle.getMessage());
+            throw new TicketInsertionException();
         }
     }
     
-    private static void insert_ticket(Connection conn, OneWayTicket owt) throws TicketInsertionException{
-    String insertStmt = "INSERT INTO public.oneway(id, departure_date, location_name, direction) VALUES (?, ?, ?, ?)";
-    
-    try (PreparedStatement stmt = conn.prepareStatement(insertStmt)){
-        stmt.setString(1, owt.getID());
-        stmt.setDate(2, Date.valueOf(owt.getStartDate()));
-        stmt.setString(3, owt.getLocation());
-        stmt.setString(4, owt.getDirection());
-        
-        stmt.executeUpdate();
-    }
-    catch(SQLException sqle){
-        System.out.println(sqle.getMessage());
-        throw new TicketInsertionException("Only support 2 oneways per day!");
+    // Special insert for one way
+    public static void insert_ticket(Connection conn, OneWayTicket owt) throws TicketInsertionException{
+        String insertStmt = "INSERT INTO public.oneway(id, departure_date, location_name, ticket_type, direction) VALUES (?, ?, ?, ?, ?::direction_type)";
+
+        try (PreparedStatement stmt = conn.prepareStatement(insertStmt)){
+            stmt.setString(1, owt.getID());
+            stmt.setDate(2, Date.valueOf(owt.getStartDate()));
+            stmt.setString(3, owt.getLocation());
+            stmt.setString(4, owt.getStringTicketType());
+            stmt.setString(5, owt.getStringDirection());
+
+            stmt.executeUpdate();
         }
+        catch(SQLException sqle){
+            System.out.println(sqle.getMessage());
+            throw new TicketInsertionException("Only support 2 oneways per day!");
+            }
     }
     
     // Return a map of 2 lists: One being long-term ticket details, the other being oneway
@@ -117,16 +85,16 @@ public class CRUD_Tickets {
     Map<String, List> ticket_details = new HashMap<>();
     
     
-    String longterm_Stmt = "SELECT W.start_date, W.end_date, TI.ticket_type, TI.location_name, TI.price, TI.morning_pickuptime, TI.afternoon_pickuptime "
+    String longterm_Stmt = "SELECT W.start_date, W.end_date, W.actual_price, W.ticket_type, TI.location_name, TI.morning_pickuptime, TI.afternoon_pickuptime "
                          + "FROM public.longterm W "
                          + "JOIN public.ticket_information TI ON (W.ticket_type = TI.ticket_type AND W.location_name = TI.location_name) "
                          + "WHERE W.id = ?";
     
-    String oneway_Stmt = "SELECT OW.departure_date, OW.direction, TI.location_name, TI.morning_pickuptime, TI.afternoon_pickuptime "
+    String oneway_Stmt = "SELECT OW.departure_date, OW.direction, OW.actual_price, OW.ticket_type, TI.location_name, TI.morning_pickuptime, TI.afternoon_pickuptime "
                        + "FROM public.oneway OW "
                        + "JOIN public.ticket_information TI ON (OW.ticket_type = TI.ticket_type AND OW.location_name = TI.location_name) "
                        + "WHERE OW.id = ? "
-                       + "ORDER BY OW.departure_date ASC, OW.direction DESC";
+                       + "ORDER BY OW.departure_date ASC, OW.direction ASC";
     
     // Query long-term tickets
     try (PreparedStatement stmt = conn.prepareStatement(longterm_Stmt)){
@@ -136,13 +104,13 @@ public class CRUD_Tickets {
         while(WD_rSet.next()){
             LocalDate start_date = WD_rSet.getDate("start_date").toLocalDate();
             String location = WD_rSet.getString("location_name");  
-            long price = WD_rSet.getLong("price");
-            LocalDate end_date = WD_rSet.getDate("end_date").toLocalDate();
+            long price = WD_rSet.getLong("actual_price");
             String type = WD_rSet.getString("ticket_type");
+            LocalDate end_date = WD_rSet.getDate("end_date").toLocalDate();
             LocalTime morning_pickuptime = WD_rSet.getTime("morning_pickuptime").toLocalTime();
             LocalTime afternoon_pickuptime = WD_rSet.getTime("afternoon_pickuptime").toLocalTime();
             
-            longterm_details.add(new LongTermDetails(id, start_date, location, price, end_date, type, morning_pickuptime, afternoon_pickuptime));
+            longterm_details.add(new LongTermDetails(id, start_date, location, price, type, end_date, morning_pickuptime, afternoon_pickuptime));
         }
     }
     catch (SQLException sqle){
@@ -157,10 +125,12 @@ public class CRUD_Tickets {
         while(OW_rSet.next()){
             LocalDate departure_date = OW_rSet.getDate("departure_date").toLocalDate();
             String location = OW_rSet.getString("location_name");  
+            long price = OW_rSet.getLong("actual_price");
+            String type = OW_rSet.getString("ticket_type");
             String direction = OW_rSet.getString("direction");
-            LocalTime pickuptime = (direction.equals("T")) ? OW_rSet.getTime("morning_pickuptime").toLocalTime() : OW_rSet.getTime("afternoon_pickuptime").toLocalTime();  
+            LocalTime pickuptime = (direction.equals("TO")) ? OW_rSet.getTime("morning_pickuptime").toLocalTime() : OW_rSet.getTime("afternoon_pickuptime").toLocalTime();  
             
-            oneway_details.add(new OneWayDetails(id, departure_date, location, direction, pickuptime));
+            oneway_details.add(new OneWayDetails(id, departure_date, location, price, type, direction, pickuptime));
         }
     }
     catch(SQLException sqle){

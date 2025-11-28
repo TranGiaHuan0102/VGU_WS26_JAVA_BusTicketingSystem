@@ -1,12 +1,10 @@
 package com.controller.java.tickets;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
-
 
 public class DailyTicket extends Ticket{
     private final LocalDate end_date;
+    private final TICKET_TYPE ticket_type = TICKET_TYPE.DAILY;
     
     // Constructor
     DailyTicket(String id, LocalDate start_date, String location_name){ 
@@ -21,5 +19,9 @@ public class DailyTicket extends Ticket{
     }
     
     // Getters
+    @Override
+    public String getStringTicketType(){return this.ticket_type.toString();}
+    @Override
+    public LocalDate getExpiryDate(){return this.end_date;}
     public LocalDate getEndDate(){return this.end_date;}
 }

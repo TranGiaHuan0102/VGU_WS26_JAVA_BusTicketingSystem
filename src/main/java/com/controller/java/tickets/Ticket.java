@@ -8,6 +8,12 @@ public abstract class Ticket{
     private final LocalDate start_date;
     private final String location;
     
+    // Enum for ticket type
+    protected enum TICKET_TYPE{
+        WEEKLY,
+        DAILY,
+        ONEWAY
+    }
     
     // Constructor
     protected Ticket(String id, LocalDate start_date, String location){
@@ -20,4 +26,8 @@ public abstract class Ticket{
     public String getID(){return this.id;}
     public LocalDate getStartDate(){return this.start_date;}
     public String getLocation(){return this.location;}
+    
+    // Abstract getters:
+    public abstract String getStringTicketType();
+    public abstract LocalDate getExpiryDate();
 }

@@ -13,14 +13,12 @@ import java.util.ArrayList;
 
 public class LongTermDetails extends TicketDetails{
     private final LocalDate expiry_date;
-    private final String type;
     private final LocalTime morning_pickuptime;
     private final LocalTime afternoon_pickuptime;
     
-    public LongTermDetails(String id, LocalDate start_date, String location, long price, LocalDate end_date, String type, LocalTime morning_pickuptime, LocalTime afternoon_pickuptime){
-        super(id, start_date, location, price);
+    public LongTermDetails(String id, LocalDate start_date, String location, long price, String type, LocalDate end_date, LocalTime morning_pickuptime, LocalTime afternoon_pickuptime){
+        super(id, start_date, location, price, type);
         this.expiry_date = end_date;
-        this.type = type;
         this.morning_pickuptime = morning_pickuptime;
         this.afternoon_pickuptime = afternoon_pickuptime;
     }
@@ -30,7 +28,7 @@ public class LongTermDetails extends TicketDetails{
     }
     
     // Getters
-    protected String getType(){return this.type;}
+    
     protected LocalDate getExpiryDate(){return this.expiry_date;}
     protected String getStringExpiryDate(){return this.expiry_date.toString();}
     protected LocalTime getMorningTime(){return this.morning_pickuptime;}
@@ -43,13 +41,14 @@ public class LongTermDetails extends TicketDetails{
         List<String> ticket_detail = new ArrayList<>();
         ticket_detail.add(getID());
         ticket_detail.add(getType());
-        ticket_detail.add(getStringStartDate());
-        ticket_detail.add(getStringExpiryDate());
-        ticket_detail.add(getLocation());
         ticket_detail.add(getFormattedPrice());
+        ticket_detail.add(getLocation());
+        
         ticket_detail.add(getStringMorningTime());
         ticket_detail.add(getStringAfternoonTime());
         
+        ticket_detail.add(getStringStartDate());
+        ticket_detail.add(getStringExpiryDate());
         String expiry_status = (DaysUntilExpiry() < 0) ? "EXPIRED" : "ACTIVE";
         ticket_detail.add(expiry_status);
         

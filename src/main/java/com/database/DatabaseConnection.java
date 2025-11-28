@@ -11,6 +11,7 @@ import com.database.CRUD.*;
 import com.exceptions.*;
 
 import com.controller.java.tickets.Ticket;
+import com.controller.java.tickets.OneWayTicket;
 import com.controller.java.users.User;
 
 
@@ -47,7 +48,12 @@ public class DatabaseConnection {
     
     // Insert ticket
     public void insert(Ticket t) throws TicketInsertionException{
-        CRUD_Tickets.insert_ticket(conn, t);
+        if (t instanceof OneWayTicket){
+            CRUD_Tickets.insert_ticket(conn, (OneWayTicket) t);
+        }
+        else{
+            CRUD_Tickets.insert_ticket(conn, t);
+        }
     }
     
     // Insert user
