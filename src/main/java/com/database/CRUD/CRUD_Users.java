@@ -18,7 +18,7 @@ public class CRUD_Users {
     
     public static void insert_user(Connection conn, User u) throws NewUserException{
         String insert_Stmt = "INSERT INTO public.user (id, first_name, last_name, password, email, user_type, user_price_multiplier) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+                + "VALUES (?, ?, ?, ?, ?, ?::roles, ?)";
         
         try(PreparedStatement stmt = conn.prepareStatement(insert_Stmt)){
             stmt.setString(1, u.getID());
