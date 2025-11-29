@@ -1,14 +1,14 @@
 -- To run this setup file, use: psql -U postgres -d BusTicketManagementSystem -f tables-setup.sql
 
 -- Uncomment if need fresh db (this will wipe existing data)
--- DROP TABLE IF EXISTS public.oneway CASCADE;
--- DROP TABLE IF EXISTS public.longterm CASCADE;
--- DROP TABLE IF EXISTS public.ticket_information CASCADE;
--- DROP TABLE IF EXISTS public.ticket_types CASCADE;
--- DROP TABLE IF EXISTS public.locations CASCADE;
--- DROP TABLE IF EXISTS public.user_types CASCADE;
--- DROP TABLE IF EXISTS public.user CASCADE;
--- DROP TYPE IF EXISTS direction_type CASCADE;
+DROP TABLE IF EXISTS public.oneway CASCADE;
+DROP TABLE IF EXISTS public.longterm CASCADE;
+DROP TABLE IF EXISTS public.ticket_information CASCADE;
+DROP TABLE IF EXISTS public.ticket_types CASCADE;
+DROP TABLE IF EXISTS public.locations CASCADE;
+DROP TABLE IF EXISTS public.user_types CASCADE;
+DROP TABLE IF EXISTS public.user CASCADE;
+DROP TYPE IF EXISTS direction_type CASCADE;
 
 -- Table: public.locations
 
@@ -137,26 +137,6 @@ TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.user
     OWNER to postgres;
-
--- Function to automatically set multiplier
-CREATE OR REPLACE FUNCTION set_price_multiplier()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.user_price_multiplier := CASE
-        WHEN NEW.user_type = 'PROFESSOR' THEN 0.5
-        ELSE 1.0
-    END;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
--- Trigger for price multiplier
-CREATE TRIGGER trigger_set_price_multiplier
-    BEFORE INSERT OR UPDATE OF user_type ON public.user
-    FOR EACH ROW
-    EXECUTE FUNCTION set_price_multiplier();
-
-
 
 -- Table: public.longterm
 

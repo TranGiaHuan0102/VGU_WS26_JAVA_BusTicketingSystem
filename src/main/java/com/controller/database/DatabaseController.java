@@ -33,17 +33,12 @@ public class DatabaseController {
     }
     
     // Search ticket with ID
-    public Map<String, List> search(String id) throws TicketSelectionException{
+    public Map<String, List> search_tickets(String id) throws TicketSelectionException{
         return db.search(id);
     }
     
     // Search user with ID and password
     public User search_user(String id) throws UserSelectionException, LogInException{
         return db.search_user(id);
-    }
-    
-    // Delete expired tickets
-    public void delete_expired(String id) throws TicketDeletionException{
-        db.delete_expired(id);
     }
 }

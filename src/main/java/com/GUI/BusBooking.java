@@ -7,8 +7,7 @@ package com.GUI;
 
 import com.controller.java.tickets.Ticket;
 import com.controller.java.tickets.OneWayTicket;
-import com.controller.java.tickets.DailyTicket;
-import com.controller.java.tickets.WeeklyTicket;
+import com.controller.java.tickets.LongTermTicket;
 import java.time.ZoneId;
 import java.time.LocalDate;
 import java.awt.Color;
@@ -63,11 +62,11 @@ public class BusBooking extends javax.swing.JFrame {
 
     private void setDirandDp(){
         DirectionComboBox.setEnabled(true);
-        jDateChooser1.setEnabled(true);
+        Calendar.setEnabled(true);
     }
     private void setDpnotDir(){
         DirectionComboBox.setEnabled(false);
-        jDateChooser1.setEnabled(true);  
+        Calendar.setEnabled(true);  
     }
     
     private void setTicketType(){
@@ -98,7 +97,7 @@ public class BusBooking extends javax.swing.JFrame {
         WeeklyButton = new javax.swing.JRadioButton();
         OneWayButton = new javax.swing.JRadioButton();
         jLabel4 = new javax.swing.JLabel();
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        Calendar = new com.toedter.calendar.JDateChooser();
         jLabel5 = new javax.swing.JLabel();
         DirectionComboBox = new javax.swing.JComboBox<>();
         SubmitButton = new javax.swing.JButton();
@@ -142,7 +141,6 @@ public class BusBooking extends javax.swing.JFrame {
 
         DestinationComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Destination", "Turtle Lake", "Hang Xanh", "Binh Trieu", "Binh Phuoc Crossroads", "Binh Duong Aeon Mall", "Becamex Tower" }));
         DestinationComboBox.setToolTipText("");
-        DestinationComboBox.addActionListener(this::DestinationComboBoxActionPerformed);
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel3.setText("Ticket Type:");
@@ -150,37 +148,23 @@ public class BusBooking extends javax.swing.JFrame {
         buttonGroup1.add(DailyButton);
         DailyButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         DailyButton.setText("Daily ");
-        DailyButton.addActionListener(this::DailyButtonActionPerformed);
 
         buttonGroup1.add(WeeklyButton);
         WeeklyButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         WeeklyButton.setText("Weekly");
-        WeeklyButton.addActionListener(this::WeeklyButtonActionPerformed);
 
         buttonGroup1.add(OneWayButton);
         OneWayButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         OneWayButton.setText("One-way");
-        OneWayButton.addActionListener(this::OneWayButtonActionPerformed);
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel4.setText("Go Date:");
-
-        jDateChooser1.addAncestorListener(new javax.swing.event.AncestorListener() {
-            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
-                jDateChooser1AncestorAdded(evt);
-            }
-            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
-            }
-            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
-            }
-        });
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel5.setText("Direction:");
 
         DirectionComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Direction", "Morning (From station to VGU)", "Afternoon (From VGU to station)" }));
         DirectionComboBox.setToolTipText("");
-        DirectionComboBox.addActionListener(this::DirectionComboBoxActionPerformed);
 
         SubmitButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         SubmitButton.setText("Submit");
@@ -226,7 +210,7 @@ public class BusBooking extends javax.swing.JFrame {
                                 .addGap(32, 32, 32)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(DestinationComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(Calendar, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                             .addGroup(layout.createSequentialGroup()
@@ -266,7 +250,7 @@ public class BusBooking extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(Calendar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -289,96 +273,67 @@ public class BusBooking extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void DestinationComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DestinationComboBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_DestinationComboBoxActionPerformed
-
-    private void DailyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DailyButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_DailyButtonActionPerformed
-
-    private void WeeklyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_WeeklyButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_WeeklyButtonActionPerformed
-
-    private void OneWayButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OneWayButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_OneWayButtonActionPerformed
-
-    private void DirectionComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DirectionComboBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_DirectionComboBoxActionPerformed
-
-    private int SubmitConditions(){
-        // Conditions before submission
-        if(DestinationComboBox.getSelectedIndex() == 0){
-            return 1;
-        }
-        
-        if(!DailyButton.isSelected() && !WeeklyButton.isSelected() && !OneWayButton.isSelected()){
-            return 2;
-        }
-        
-        if (jDateChooser1.getDate() == null) {
-            return 3;
-            }
-        
-        if (OneWayButton.isSelected() && DirectionComboBox.getSelectedIndex() == 0) {
-            return 4;
-        }
-        
-        // Only accept oneway tickets booked at least 3 days in advance
-        LocalDate selectedDate = jDateChooser1.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        LocalDate threeDaysLater = LocalDate.now().plusDays(3);
-        
-        if (OneWayButton.isSelected() && selectedDate.isBefore(threeDaysLater)){
-            return 5;
-        }
-        return 0;
-    }
-    
     
     private void SubmitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SubmitButtonActionPerformed
         // Check validity of submission
-        int submission_status = SubmitConditions();
         
-        switch (submission_status){
-            case 1:
-                jLabel6.setText("Please select a target station!");
-                jLabel6.setForeground(Color.RED);
-                return;
-            case 2:
-                jLabel6.setText("Please select a ticket type!");
-                jLabel6.setForeground(Color.RED);
-                return;
-            case 3:
-                jLabel6.setText("Please select a departure date!");
-                jLabel6.setForeground(Color.RED);
-                return;
-            case 4:
-                jLabel6.setText("Please select a direction for one-way ticket!");
-                jLabel6.setForeground(Color.RED);
-                return;
-            case 5:
-                jLabel6.setText("One way tickets must be booked at least 3 days in advance");
-                jLabel6.setForeground(Color.RED);
-                return;
-            default:
+        // No station error
+        if(DestinationComboBox.getSelectedIndex() == 0){
+            jLabel6.setText("Please select a target station!");
+            jLabel6.setForeground(Color.RED);
+            return;
+        }
+        
+        // No ticket type error
+        if(!DailyButton.isSelected() && !WeeklyButton.isSelected() && !OneWayButton.isSelected()){
+            jLabel6.setText("Please select a ticket type!");
+            jLabel6.setForeground(Color.RED);
+            return;
+        }
+        
+        // No data choosen
+        if (Calendar.getDate() == null) {
+            jLabel6.setText("Please select a departure date!");
+            jLabel6.setForeground(Color.RED);
+            return;
+        }
+        
+        LocalDate selectedDate = Calendar.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        
+        // Date in the past error
+        if (selectedDate.isBefore(LocalDate.now())){
+            jLabel6.setText("Cannot select a date in the past!");
+            jLabel6.setForeground(Color.RED);
+            return;
+        }
+        
+        // Not booking ahead error
+        if (OneWayButton.isSelected() && selectedDate.isBefore(LocalDate.now().plusDays(3))){
+            jLabel6.setText("One way tickets must be booked at least 3 days in advance");
+            jLabel6.setForeground(Color.RED);
+            return;
+        }
+        
+        
+        // No one-way direction error
+        if (OneWayButton.isSelected() && DirectionComboBox.getSelectedIndex() == 0) {
+            jLabel6.setText("Please specify a direction for one-way ticket!");
+            jLabel6.setForeground(Color.RED);
+            return;
         }
         
         // Create ticket obj
         Ticket t;
         
         String location = (String) DestinationComboBox.getSelectedItem();
-        LocalDate start_date = jDateChooser1.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate start_date = Calendar.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         
         if (DailyButton.isSelected()){        /*daily*/
-            t = DailyTicket.create(id, start_date, location);
+            t = LongTermTicket.createDaily(id, start_date, location);
             
         }
         else if (WeeklyButton.isSelected()){    /*weekly*/
-            t = WeeklyTicket.create(id, start_date, location);
+            t = LongTermTicket.createWeekly(id, start_date, location);
         }
         else{
             if (DirectionComboBox.getSelectedIndex() == 1){
@@ -410,13 +365,10 @@ public class BusBooking extends javax.swing.JFrame {
         m.setLocationRelativeTo(null);
     }//GEN-LAST:event_BackButtonActionPerformed
 
-    private void jDateChooser1AncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_jDateChooser1AncestorAdded
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jDateChooser1AncestorAdded
-
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BackButton;
+    private com.toedter.calendar.JDateChooser Calendar;
     private javax.swing.JRadioButton DailyButton;
     private javax.swing.JComboBox<String> DestinationComboBox;
     private javax.swing.JComboBox<String> DirectionComboBox;
@@ -425,7 +377,6 @@ public class BusBooking extends javax.swing.JFrame {
     private javax.swing.JButton SubmitButton;
     private javax.swing.JRadioButton WeeklyButton;
     private javax.swing.ButtonGroup buttonGroup1;
-    private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

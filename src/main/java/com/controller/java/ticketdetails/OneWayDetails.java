@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class OneWayDetails extends TicketDetails{
-    private final String type = "ONE WAY";
     private final String direction;
     private final LocalTime pickuptime;
     
@@ -22,7 +21,6 @@ public class OneWayDetails extends TicketDetails{
     }
     
     // Getters
-    protected LocalTime getTime(){return this.pickuptime;}
     protected String getStringTime(){return this.pickuptime.toString();}
     protected String getFormattedDirectionString(){
         if (this.direction.equals("TO")){
