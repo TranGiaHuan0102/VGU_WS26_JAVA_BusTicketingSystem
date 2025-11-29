@@ -29,7 +29,7 @@ public class BusBooking extends javax.swing.JFrame {
     
     public BusBooking(DatabaseController dbc, String user_type, String id, String username) {
         initComponents();
-        setTicketType();
+
         // ADD DB CONTROLLER
         this.dbc = dbc;
         
@@ -55,27 +55,7 @@ public class BusBooking extends javax.swing.JFrame {
                 System.exit(0);
             }
         });
-        
-
-        
-    }
-
-    private void setDirandDp(){
-        DirectionComboBox.setEnabled(true);
-        Calendar.setEnabled(true);
-    }
-    private void setDpnotDir(){
-        DirectionComboBox.setEnabled(false);
-        Calendar.setEnabled(true);  
-    }
-    
-    private void setTicketType(){
-        DailyButton.addActionListener(e -> setDpnotDir());
-        WeeklyButton.addActionListener(e -> setDpnotDir());
-        OneWayButton.addActionListener(e -> setDirandDp()); 
-    }
-    
-    
+    }    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -148,14 +128,17 @@ public class BusBooking extends javax.swing.JFrame {
         buttonGroup1.add(DailyButton);
         DailyButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         DailyButton.setText("Daily ");
+        DailyButton.addActionListener(this::DailyButtonActionPerformed);
 
         buttonGroup1.add(WeeklyButton);
         WeeklyButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         WeeklyButton.setText("Weekly");
+        WeeklyButton.addActionListener(this::WeeklyButtonActionPerformed);
 
         buttonGroup1.add(OneWayButton);
         OneWayButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         OneWayButton.setText("One-way");
+        OneWayButton.addActionListener(this::OneWayButtonActionPerformed);
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel4.setText("Go Date:");
@@ -336,7 +319,7 @@ public class BusBooking extends javax.swing.JFrame {
             t = LongTermTicket.createWeekly(id, start_date, location);
         }
         else{
-            if (DirectionComboBox.getSelectedIndex() == 1){
+            if (DirectionComboBox.getSelectedIndex() == 1){ /*one way*/
                 t = OneWayTicket.create_FROM(id, start_date, location);
             }
             else{
@@ -364,6 +347,23 @@ public class BusBooking extends javax.swing.JFrame {
         m.setVisible(true);
         m.setLocationRelativeTo(null);
     }//GEN-LAST:event_BackButtonActionPerformed
+
+    private void DailyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DailyButtonActionPerformed
+        DirectionComboBox.setSelectedIndex(0);
+        DirectionComboBox.setEnabled(false);
+        Calendar.setEnabled(true);
+    }//GEN-LAST:event_DailyButtonActionPerformed
+
+    private void WeeklyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_WeeklyButtonActionPerformed
+        DirectionComboBox.setSelectedIndex(0);
+        DirectionComboBox.setEnabled(false);
+        Calendar.setEnabled(true);
+    }//GEN-LAST:event_WeeklyButtonActionPerformed
+
+    private void OneWayButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OneWayButtonActionPerformed
+        DirectionComboBox.setEnabled(true);
+        Calendar.setEnabled(true);
+    }//GEN-LAST:event_OneWayButtonActionPerformed
 
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
