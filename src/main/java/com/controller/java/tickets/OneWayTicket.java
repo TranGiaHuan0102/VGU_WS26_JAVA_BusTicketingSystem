@@ -3,14 +3,14 @@ package com.controller.java.tickets;
 import java.time.LocalDate;
 
 public class OneWayTicket extends Ticket{
-    private enum Direction{
-        TO,
-        FROM
-    } 
-    private final Direction direction;
+        private enum Direction{
+            TO,
+            FROM
+        } 
+        private final Direction direction;
     
     // Constructor
-    OneWayTicket(String id, TICKET_TYPE ticket_type, LocalDate date, String location_name, Direction d){
+    private OneWayTicket(String id, TICKET_TYPE ticket_type, LocalDate date, String location_name, Direction d){
         super(id, ticket_type, date, location_name);
         this.direction = d;
     }

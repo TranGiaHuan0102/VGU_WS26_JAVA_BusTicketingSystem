@@ -50,7 +50,8 @@ public class CRUD_Tickets {
     
     // One-way insert
     public static void insert_ticket(Connection conn, OneWayTicket owt) throws TicketInsertionException{
-        String insertStmt = "INSERT INTO public.oneway(id, departure_date, location_name, ticket_type, direction) VALUES (?, ?, ?, ?, ?::direction_type)";
+        String insertStmt = "INSERT INTO public.oneway(id, departure_date, location_name, ticket_type, direction) "
+                + "VALUES (?, ?, ?, ?, ?::direction_type)";
 
         try (PreparedStatement stmt = conn.prepareStatement(insertStmt)){
             stmt.setString(1, owt.getID());
