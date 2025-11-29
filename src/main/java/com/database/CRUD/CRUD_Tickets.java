@@ -31,7 +31,7 @@ public class CRUD_Tickets {
             throw new TicketInsertionException("User already has an active long-term ticket!");
         }
         
-        String insertStmt = "INSERT INTO public.longterm(id, start_date, end_date, ticket_type, location_name) VALUES (?, ?, ?, ?, ?)";
+        String insertStmt = "INSERT INTO public.longterm(id, start_date, end_date, ticket_type, location_name) VALUES (?, ?, ?, ?::ticket_types, ?)";
         
         try (PreparedStatement stmt = conn.prepareStatement(insertStmt)) {
             stmt.setString(1, lt.getID());
@@ -50,14 +50,14 @@ public class CRUD_Tickets {
     
     // One-way insert
     public static void insert_ticket(Connection conn, OneWayTicket owt) throws TicketInsertionException{
-        String insertStmt = "INSERT INTO public.oneway(id, departure_date, location_name, ticket_type, direction) "
-                + "VALUES (?, ?, ?, ?, ?::direction_type)";
+        String insertStmt = "INSERT INTO public.oneway(id, departure_date, ticket_type, location_name, direction) "
+                + "VALUES (?, ?, ?::ticket_types, ?, ?::direction_type)";
 
         try (PreparedStatement stmt = conn.prepareStatement(insertStmt)){
             stmt.setString(1, owt.getID());
             stmt.setDate(2, Date.valueOf(owt.getStartDate()));
-            stmt.setString(3, owt.getLocation());
-            stmt.setString(4, owt.getStringTicketType());
+            stmt.setString(3, owt.getStringTicketType());
+            stmt.setString(4, owt.getLocation());
             stmt.setString(5, owt.getStringDirection());
 
             stmt.executeUpdate();
@@ -79,14 +79,14 @@ public class CRUD_Tickets {
     Map<String, List> ticket_details = new HashMap<>();
     
     
-    String longterm_Stmt = "SELECT W.start_date, W.end_date, W.actual_price, W.ticket_type, TI.location_name, TI.morning_pickuptime, TI.afternoon_pickuptime "
+    String longterm_Stmt = "SELECT W.start_date, W.end_date, W.actual_price, W.ticket_type, PE.location_name, PE.morning_pickuptime, PE.afternoon_pickuptime "
                          + "FROM public.longterm W "
-                         + "JOIN public.ticket_information TI ON (W.ticket_type = TI.ticket_type AND W.location_name = TI.location_name) "
+                         + "JOIN public.price_entries PE ON (W.ticket_type = PE.ticket_type AND W.location_name = PE.location_name) "
                          + "WHERE W.id = ?";
     
-    String oneway_Stmt = "SELECT OW.departure_date, OW.direction, OW.actual_price, OW.ticket_type, TI.location_name, TI.morning_pickuptime, TI.afternoon_pickuptime "
+    String oneway_Stmt = "SELECT OW.departure_date, OW.direction, OW.actual_price, OW.ticket_type, PE.location_name, PE.morning_pickuptime, PE.afternoon_pickuptime "
                        + "FROM public.oneway OW "
-                       + "JOIN public.ticket_information TI ON (OW.ticket_type = TI.ticket_type AND OW.location_name = TI.location_name) "
+                       + "JOIN public.price_entries PE ON (OW.ticket_type = PE.ticket_type AND OW.location_name = PE.location_name) "
                        + "WHERE OW.id = ? "
                        + "ORDER BY OW.departure_date ASC, OW.direction ASC";
     
