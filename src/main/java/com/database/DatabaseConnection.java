@@ -10,9 +10,8 @@ import java.util.List;
 import com.database.CRUD.*;
 import com.exceptions.*;
 
-import com.controller.java.tickets.Ticket;
-import com.controller.java.tickets.OneWayTicket;
-import com.controller.java.users.User;
+import com.controller.java.tickets.*;
+import com.controller.java.users.*;
 
 
 public class DatabaseConnection {
@@ -52,7 +51,7 @@ public class DatabaseConnection {
             CRUD_Tickets.insert_ticket(conn, (OneWayTicket) t);
         }
         else{
-            CRUD_Tickets.insert_ticket(conn, t);
+            CRUD_Tickets.insert_ticket(conn, (LongTermTicket) t);
         }
     }
     
@@ -68,10 +67,5 @@ public class DatabaseConnection {
     
     public User search_user(String id) throws UserSelectionException, LogInException{
         return CRUD_Users.search_user(conn, id);
-    }
-    
-    // Delete expired tickets
-    public void delete_expired(String id) throws TicketDeletionException{
-        CRUD_Tickets.delete_tickets(conn, id);
     }
 }

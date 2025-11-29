@@ -192,7 +192,9 @@ public class UserLogin extends javax.swing.JFrame {
         String username;
         try{
             User u = dbc.search_user(id);
-            if (!u.getPassword().equals(password)){
+            if (!u.getPassword().trim().equals(password.trim())){
+                System.out.println(password);
+                System.out.println(u.getPassword());
                 ErrorMessage.setText("Wrong password!");
                 return;
             }
@@ -205,6 +207,7 @@ public class UserLogin extends javax.swing.JFrame {
         }
         catch (LogInException LIe){
             ErrorMessage.setText(LIe.getMessage());
+            System.out.println(LIe.getMessage());
             return;
         }
         catch (UserSelectionException USe){

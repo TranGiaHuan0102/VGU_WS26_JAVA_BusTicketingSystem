@@ -170,7 +170,7 @@ public class UserMenu extends javax.swing.JFrame {
     private void SeeTicketsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SeeTicketsButtonActionPerformed
         try{
             // List containing ticket details of both ticket types (long-term and oneway)
-            Map<String, List> ticket_details = dbc.search(id);
+            Map<String, List> ticket_details = dbc.search_tickets(id);
             
             // Separate them 
             List<TicketDetails> longterm_details = ticket_details.get("LONGTERM");

@@ -28,12 +28,8 @@ public class LongTermDetails extends TicketDetails{
     }
     
     // Getters
-    
-    protected LocalDate getExpiryDate(){return this.expiry_date;}
     protected String getStringExpiryDate(){return this.expiry_date.toString();}
-    protected LocalTime getMorningTime(){return this.morning_pickuptime;}
     protected String getStringMorningTime(){return this.morning_pickuptime.toString();}
-    protected LocalTime getAfternoontime(){return this.afternoon_pickuptime;}
     protected String getStringAfternoonTime(){return this.afternoon_pickuptime.toString();}
     
     @Override

@@ -1,8 +1,7 @@
 package com.database.CRUD;
 
 
-import com.controller.java.tickets.Ticket;
-import com.controller.java.tickets.OneWayTicket;
+import com.controller.java.tickets.*;
 import com.controller.java.ticketdetails.*;
 import com.exceptions.*;
 
@@ -20,32 +19,26 @@ import java.util.HashMap;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-
-
-
-
-
-
 public class CRUD_Tickets {    
     
 
     // Overloading Inserts:
     
-    // Default insert is for weekly and daily (longterm)
-    public static void insert_ticket(Connection conn, Ticket t) throws TicketInsertionException{        
+    // Long-term insert
+    public static void insert_ticket(Connection conn, LongTermTicket lt) throws TicketInsertionException{        
         // Eligibility check
-        if (!CRUD_TicketHelpers.eligible(conn, t.getID())){
+        if (!CRUD_TicketHelpers.eligible(conn, lt.getID())){
             throw new TicketInsertionException("User already has an active long-term ticket!");
         }
         
         String insertStmt = "INSERT INTO public.longterm(id, start_date, end_date, ticket_type, location_name) VALUES (?, ?, ?, ?, ?)";
         
         try (PreparedStatement stmt = conn.prepareStatement(insertStmt)) {
-            stmt.setString(1, t.getID());
-            stmt.setDate(2, Date.valueOf(t.getStartDate()));
-            stmt.setDate(3, Date.valueOf(t.getExpiryDate()));
-            stmt.setString(4, t.getStringTicketType());
-            stmt.setString(5, t.getLocation());
+            stmt.setString(1, lt.getID());
+            stmt.setDate(2, Date.valueOf(lt.getStartDate()));
+            stmt.setDate(3, Date.valueOf(lt.getExpiryDate()));
+            stmt.setString(4, lt.getStringTicketType());
+            stmt.setString(5, lt.getLocation());
 
             stmt.executeUpdate();
         }
@@ -55,7 +48,7 @@ public class CRUD_Tickets {
         }
     }
     
-    // Special insert for one way
+    // One-way insert
     public static void insert_ticket(Connection conn, OneWayTicket owt) throws TicketInsertionException{
         String insertStmt = "INSERT INTO public.oneway(id, departure_date, location_name, ticket_type, direction) VALUES (?, ?, ?, ?, ?::direction_type)";
 
@@ -142,29 +135,5 @@ public class CRUD_Tickets {
     ticket_details.put("ONEWAY", oneway_details);
     
     return ticket_details;
-    }
-    
-    public static void delete_tickets(Connection conn, String id) throws TicketDeletionException{
-        String delete_longterm_Stmt = "DELETE FROM public.longterm WHERE (ID = ? AND end_date < CURRENT_DATE)";
-        
-        String delete_oneway_Stmt = "DELETE FROM public.oneway WHERE (ID = ? AND departure_date < CURRENT_DATE)";
-        
-        // Delete from WEEKLY_DAILY
-        try(PreparedStatement stmt = conn.prepareStatement(delete_longterm_Stmt)){
-            stmt.setString(1, id);
-            stmt.executeUpdate();
-        }
-        catch (SQLException sqle){
-            throw new TicketDeletionException(sqle.getMessage());
-        }
-        
-        // Delete from ONEWAY
-        try(PreparedStatement stmt = conn.prepareStatement(delete_oneway_Stmt)){
-            stmt.setString(1, id);
-            stmt.executeUpdate();
-        }
-        catch (SQLException sqle){
-            throw new TicketDeletionException(sqle.getMessage());
-        }
     }
 }

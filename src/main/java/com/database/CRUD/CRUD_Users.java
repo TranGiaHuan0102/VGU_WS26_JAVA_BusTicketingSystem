@@ -17,7 +17,8 @@ import com.exceptions.*;
 public class CRUD_Users {
     
     public static void insert_user(Connection conn, User u) throws NewUserException{
-        String insert_Stmt = "INSERT INTO public.user (id, first_name, last_name, password, email, user_type) VALUES (?, ?, ?, ?, ?, ?)";
+        String insert_Stmt = "INSERT INTO public.user (id, first_name, last_name, password, email, user_type, user_price_multiplier) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
         
         try(PreparedStatement stmt = conn.prepareStatement(insert_Stmt)){
             stmt.setString(1, u.getID());
@@ -26,6 +27,7 @@ public class CRUD_Users {
             stmt.setString(4, u.getPassword());
             stmt.setString(5, u.getEmailAddress());
             stmt.setString(6, u.getStringUserType());
+            stmt.setDouble(7, u.getPriceMultiplier());
             
             stmt.executeUpdate();
         }
@@ -51,10 +53,10 @@ public class CRUD_Users {
             String password = rSet.getString("password");
             
             if (rSet.getString("user_type").equals("STUDENT")){
-                return (User) new Student(first_name, last_name, email, password, id);
+                return (User) new Student(id, first_name, last_name, email, password);
             }
             else{
-                return (User) new Professor(first_name, last_name, email, password, id);
+                return (User) new Professor(id, first_name, last_name, email, password);
             }
         }
         else{

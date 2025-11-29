@@ -24,7 +24,6 @@ public abstract class TicketDetails {
     }
     
     // Getters
-    
     protected final String getID() {return this.id;}
     protected final LocalDate getStartDate() {return this.start_date;}
     protected final String getStringStartDate() {return this.start_date.toString();}
@@ -34,6 +33,4 @@ public abstract class TicketDetails {
     
     // Print ticket
     public abstract List<String> returnTicketDetail();
-    
-    
 }

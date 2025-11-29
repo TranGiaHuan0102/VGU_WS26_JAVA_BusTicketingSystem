@@ -234,10 +234,10 @@ public class NewUser extends javax.swing.JFrame {
         // Create a user object based on user_type
         User u;
         if (user_type.equals("Student")){
-            u = new Student(fname, lname, email, password, id);
+            u = new Student(id, fname, lname, email, password);
         }
         else{
-            u = new Professor(fname, lname, email, password, id); 
+            u = new Professor(id, fname, lname, email, password); 
         }
         
         try{
